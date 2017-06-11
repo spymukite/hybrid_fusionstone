@@ -1,0 +1,1212 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Fusion</title>
+
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0, target-densitydpi=device-dpi" id="viewport" /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0" id="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    <!-- <script src="js/screen_size.js" type="text/javascript"></script> -->
+
+
+    <link rel="stylesheet/less" type="text/css" href="css/colors.less" />
+    <link rel="stylesheet/less" type="text/css" href="css/variables.less" />
+    <link rel="stylesheet/less" type="text/css" href="css/fusion.less" />
+    <link href="jquery-mobile-1-4-5/jquery.mobile.structure-1.4.5.css" rel="stylesheet" type="text/css">
+    <link href="js/slick/slick.css" rel="stylesheet" type="text/css">
+
+    <script src="js/jquery-1.11.2.min.js" type="text/javascript"></script>
+    <script src="jquery-mobile-1-4-5/jquery.mobile-1.4.5.min.js" type="text/javascript"></script>
+    <script src="js/slick/slick.min.js" type="text/javascript"></script>
+    <script src="js/less.min.js" type="text/javascript"></script>
+    <script src="js/fusion.js" type="text/javascript"></script>
+    <script src="Scripts/angular.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/screen_size.js"></script>
+    <script>
+
+		less.modifyVars({
+			'@screenWidth': effectiveDeviceWidth() + 'px',
+			'@screenHeight': effectiveDeviceHeight() + 'px'
+		});
+        $(function () {
+            $("body").pagecontainer({ defaults: true });
+
+            $("[data-role='navbar']").navbar();
+            $("[data-role='header'], [data-role='footer']").toolbar();
+
+            $("body > [data-role='panel']").panel();
+            $("body > [data-role='panel'] [data-role='listview']").listview();
+
+        });
+        $(document).on("pagecreate", function () {
+        });
+    </script>
+
+</head>
+<body ng-app="Fusion_App" ng-controller="FusionAppCtrl">
+
+    <!-- start: Main Menu -->
+    <div data-id="left_menu" data-role="panel" data-position="left" data-position-fixed="true" data-display="push" id="left_menu" class="left_menu ui-panel ui-panel-position-left ui-panel-display-push ui-body-a">
+        <div class="ui-panel-inner">
+            <ul class="left_inner first">
+                <li class="left_menu_item"><a href="#main_content">About Fusion</a></li>
+                <li class="left_menu_item"><a href="#" class="act">Estimator</a></li>
+                <li class="left_menu_item"><a href="#purchase">Where to purchase</a></li>
+                <li class="left_menu_item no_border"><a href="#contact">Contact</a></li>
+            </ul>
+            <ul class="left_inner last">
+                <li class="left_menu_item"><a href="#language" onclick="hideHeader(); hideCatalogFooter(); hideSamplesFooter();">Change Language</a></li>
+                <li class="left_menu_item"><a href="#">Support</a></li>
+                <li class="left_menu_item social_media no_border">
+                    <a href="#">
+                        <img src="images/social_media/twitter.png">
+                    </a>
+                    <a href="#">
+                        <img src="images/social_media/facebook.png">
+                    </a>
+                    <a href="#">
+                        <img src="images/social_media/linkedIn.png">
+                    </a>
+                    <a href="#">
+                        <img src="images/social_media/gplus.png">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- end: Main Menu -->
+    <!-- header begin -->
+    <div class="header" data-role="header" data-position="fixed" data-tap-toggle="false">
+        <a href="#left_menu" id="main_menu_toggle">
+            <img src="images/menu_icon.png">
+        </a>
+        <a href="#" id="back_button" class="ui-btn-left ui-link ui-btn ui-shadow ui-corner-all">
+            <img src="images/back_icon.png">
+        </a>
+        <a href="#catalog_or_samples" id="header_logo" class="ui-btn-left ui-link ui-btn ui-shadow ui-corner-all" data-transition="slide" data-direction="reverse" onclick="hideCatalogFooter(); hideSamplesFooter();">
+            <img src="images/header_logo.png">
+        </a>
+        <a href="#purchase" id="find_a_dealer_button" class="ui-btn-right ui-link ui-btn ui-shadow ui-corner-all" data-transition="slide" data-direction="reverse">
+            <span>Find a dealer &nbsp;&nbsp;&nbsp;</span>
+            <img src="images/find_a_dealer_pointer.png">
+        </a>
+        <a href="#favorites" id="header_favourite" class="ui-btn-right ui-link ui-btn ui-shadow ui-corner-all" data-transition="slide" onclick="hideCatalogFooter(); hideSamplesFooter();">
+            <img src="images/favorites_icon.png">
+            <span>&nbsp;&nbsp;</span>
+            <span>5</span>
+        </a>
+    </div>
+    <!-- header end -->
+    <!-- start: Language Selection -->
+    <div data-role="page" id="language" data-url="language" tabindex="0">
+        <div class="ui-panel-wrapper">
+            <img src="images/landing_pages/logo.png" class="landing_logo">
+            <a href="#catalog_or_samples" class="landing_link left" data-transition="slide">English</a>
+            <a href="#catalog_or_samples" class="landing_link right" data-transition="slide">FRANÇAIS</a>
+        </div>
+    </div>
+    <!-- end: Language Selection -->
+    <!-- start: Catalog or Samples Selection -->
+    <div data-role="page" id="catalog_or_samples" data-url="catalog_or_samples" tabindex="1">
+        <div class="ui-panel-wrapper">
+            <img src="images/landing_pages/logo.png" class="landing_logo">
+            <a href="#main_content" class="landing_link left" onclick="showHeader(); showCatalogFooter();">Catalog</a>
+            <a href="#samples_landing" class="landing_link right" onclick="showHeader();">Stone Samples</a>
+        </div>
+    </div>
+    <!-- end: Catalog or Samples Selection -->
+    <!-- start: Main Content -->
+    <div data-role="page" id="main_content" data-url="main_content" tabindex="2">
+        <div class="ui-panel-wrapper">
+            <div class="slider">
+
+                <!-- start: About Us Page 1 -->
+                <div class="content_item background about_us top right" style="background-image:url(images/about_us/1_bg.jpg)">
+                    <div class="hover_description">
+                        <h1>About Fusion</h1>
+                        <h2>Do it yourself masonry guide</h2>
+                        <p>Fusion Stone is an easy and budget-friendly way to beautifully upgrade your home, inside and out. Available in three distinct textures, all backed by a Lifetime Guarantee, Fusion Stone can be installed on both new and existing wall assemblies regardless of surface. With just a fewbasic tools your average home handyperson is transformed into a Fusion Stone expert!</p>
+                    </div>
+                </div>
+                <!-- end: About Us Page 1 -->
+                <!-- start: About Us Page 2 -->
+                <div class="content_item background about_us bottom left">
+                    <div class="hover_description">
+                        <h1>About Fusion</h1>
+                        <h2>What you need</h2>
+                    </div>
+
+                    <div class="diy_image">
+                        <img src="images/about_us/2_content.jpg" width="1864" height="720">
+                    </div>
+                    <div class="diy_heading">
+                        <h1>Do it yourself masonry</h1>
+                        <h2>You can actually do yourself!</h2>
+                    </div>
+                    <div class="diy_list">
+                        <div class="third_width">
+                            <ul>
+                                <li>tape measure</li>
+                                <li>level</li>
+                                <li>rubber head hammer</li>
+                                <li>power drill and bit (bit is provided)</li>
+                            </ul>
+                        </div>
+                        <div class="third_width">
+                            <ul>
+                                <li>grinder or saw with masonry blade</li>
+                                <li>safety glasses</li>
+                                <li>breathable weather resistant barrier</li>
+                                <li>plywood or OSB</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- end: About Us Page 2 -->
+                <!-- start: About Us Page 3 -->
+                <div class="content_item background about_us top left" style="background-image:url(images/about_us/3_bg.jpg)">
+                    <div class="hover_description">
+                        <h1>About Fusion</h1>
+                        <h2>PATENTED DIY CLIP SYSTEM</h2>
+                        <p>Fusion Stone features a patented system of stainless steel clips and screws that can be installed in any weather by anyone for a lifetime of maintenance free performance.</p>
+                    </div>
+                </div>
+                <!-- end: About Us Page 3 -->
+                <!-- start: About Us Page 4 -->
+                <div class="content_item background about_us top left">
+                    <div class="hover_description">
+                        <h1>About Fusion</h1>
+                        <h2>Installation</h2>
+                    </div>
+                    <div class="steps">
+                        <!-- start: Column 1 -->
+                        <div class="quarter_width">
+                            <div class="image">
+                                <img src="images/about_us/4_content_1.jpg">
+                            </div>
+                            <p>Step 1</p>
+                            <h2>PREPARE YOUR SURFACE</h2>
+                            <p>Fusion Stone is installed over a Plywood or OSB substrate. Ensure that the substrate has been covered in a code approved, breathable, weather resistant barrier. Not required on interior installations.</p>
+                        </div>
+                        <!-- end: Column 1 -->
+                        <!-- start: Column 2 -->
+                        <div class="quarter_width">
+                            <div class="image">
+                                <img src="images/about_us/4_content_2.jpg">
+                            </div>
+                            <p>Step 2</p>
+                            <h2>INSTALLING THE STARTER STRIP</h2>
+                            <p>Starter Strips are used at the base of all jobs as well as above any opening (windows and doors). Level and install the Starter Strips using the stainless steel screws provided.</p>
+                        </div>
+                        <!-- end: Column 2 -->
+                        <!-- start: Column 3 -->
+                        <div class="quarter_width">
+                            <div class="image">
+                                <img src="images/about_us/4_content_3.jpg">
+                            </div>
+                            <p>Step 3</p>
+                            <h2>INSTALLING FUSION CORNERS</h2>
+                            <p>Begin installing Fusion Stone at the corner. As you build thecorner ensure that you alternate short and long sides.</p>
+                        </div>
+                        <!-- end: Column 3 -->
+                        <!-- start: Column 4 -->
+                        <div class="quarter_width">
+                            <div class="image">
+                                <img src="images/about_us/4_content_4.jpg">
+                            </div>
+                            <p>Step 4</p>
+                            <h2>COMPLETE INSTALING STONE</h2>
+                            <p>Continue to lay the stone in the pattern described in the detailed instructions. The last stone installed on every row may need to be cut to length.</p>
+                        </div>
+                        <!-- end: Column 4 -->
+
+                    </div>
+                </div>
+                <!-- end: About Us Page 4 -->
+                <!-- start: Great Lakes -->
+                <div class="content_item catalog background about_us top left" style="background-image:url(images/sample_images/Brindle/brindle1.jpg);">
+
+                    <!-- start: Catalog List Page OUTER Wrapper -->
+                    <div class="catalog_list_outer_wrapper">
+                        <!-- start: Hover Description -->
+                        <div class="hover_description">
+                            <h1>Stones</h1>
+                            <h2>Great Lakes</h2>
+                        </div>
+                        <!-- start: Hover Description -->
+                        <!-- start: Catalog List Page INNER Wrapper -->
+                        <div class="catalog_list_inner_wrapper">
+                            <p>“Great Lakes” is our best-selling Fusion Stone system for a reason. It fuses together ease of installation, no mortar convenience, a rugged, traditional visual effect, and a colour selection you will love. Nothing beats Great Lakes for elegance and utter good looks.
+                                <br />
+                            Choose from the distinctive rusty and charcoal multi-hues of Brindle or the more relaxed, subdued tones of beautiful Raven.</p>
+                            <!-- start: Catalog Category Item -->
+                            <div class="catalog_category_item">
+                                <img src="images/sample_images/Brindle/brindle1.jpg">
+                                <div class="catalog_category_item_header">
+                                    <h3>Brindle</h3>
+                                    <a href="#" class="add_to_favourites">
+                                        <img src="images/catalog/add_to_favourites.png">
+                                    </a>
+                                </div>
+                                <a href="#" class="lightbox">
+                                    <img src="images/catalog/lightbox.png">
+                                </a>
+                            </div>
+                            <!-- end: Catalog Category Item -->
+                            <!-- start: Catalog Category Item -->
+                            <div class="catalog_category_item">
+                                <img src="images/sample_images/Brindle/brindle1.jpg">
+                                <div class="catalog_category_item_header">
+                                    <h3>Raven</h3>
+                                    <a href="#" class="add_to_favourites">
+                                        <img src="images/catalog/add_to_favourites.png">
+                                    </a>
+                                </div>
+                                <a href="#" class="lightbox">
+                                    <img src="images/catalog/lightbox.png">
+                                </a>
+                            </div>
+                            <!-- end: Catalog Category Item -->
+                            <!-- start: Catalog Category Item -->
+                            <div class="catalog_category_item">
+                                <img src="images/catalog/sample_list_image_3.jpg">
+                                <div class="catalog_category_item_header">
+                                    <h3>Fawn</h3>
+                                    <a href="#" class="add_to_favourites">
+                                        <img src="images/catalog/add_to_favourites.png">
+                                    </a>
+                                </div>
+                                <a href="#" class="lightbox">
+                                    <img src="images/catalog/lightbox.png">
+                                </a>
+                            </div>
+                            <!-- end: Catalog Category Item -->
+                            <!-- start: Catalog Category Item -->
+                            <div class="catalog_category_item">
+                                <img src="images/catalog/sample_list_image_4.jpg">
+                                <div class="catalog_category_item_header">
+                                    <h3>Carbon</h3>
+                                    <a href="#" class="add_to_favourites">
+                                        <img src="images/catalog/add_to_favourites.png">
+                                    </a>
+                                </div>
+                                <a href="#" class="lightbox">
+                                    <img src="images/catalog/lightbox.png">
+                                </a>
+                            </div>
+                            <!-- end: Catalog Category Item -->
+
+                        </div>
+                        <!-- start: Catalog List Page INNER Wrapper -->
+
+                    </div>
+                    <!-- end: Catalog List Page OUTER Wrapper -->
+                </div>
+                <!-- end: Great Lakes -->
+                <!-- start: Dry Stack -->
+                <div class="content_item catalog background about_us top left" style="background-image:url(images/catalog/Dry-Stack.jpg);">
+
+                    <!-- start: Catalog List Page OUTER Wrapper -->
+                    <div class="catalog_list_outer_wrapper">
+                        <!-- start: Hover Description -->
+                        <div class="hover_description">
+                            <h1>Stones</h1>
+                            <h2>Dry Stack</h2>
+                        </div>
+                        <!-- start: Hover Description -->
+                        <!-- start: Catalog List Page INNER Wrapper -->
+                        <div class="catalog_list_inner_wrapper">
+                            <p>“Dry Stack” Fusion Stone derives its name from the innovative feature of no mortar installation that translates into the much valued benefit of an easy, no mess application.
+                                <br />
+Dry Stack produces an amazingly uniform and highly finished appearance to be admired for a lifetime. The self-defining Caramel and Charcoal colour selections are difficult to choose between but both offer stunning nuances of discriminating good taste.</p>
+                            <!-- start: Catalog Category Item -->
+                            <div class="catalog_category_item">
+                                <img src="images/catalog/sample_list_image_1.jpg">
+                                <div class="catalog_category_item_header">
+                                    <h3>Caramel</h3>
+                                    <a href="#" class="add_to_favourites">
+                                        <img src="images/catalog/add_to_favourites.png">
+                                    </a>
+                                </div>
+                                <a href="#" class="lightbox">
+                                    <img src="images/catalog/lightbox.png">
+                                </a>
+                            </div>
+                            <!-- end: Catalog Category Item -->
+                            <!-- start: Catalog Category Item -->
+                            <div class="catalog_category_item">
+                                <img src="images/catalog/sample_list_image_2.jpg">
+                                <div class="catalog_category_item_header">
+                                    <h3>Charcoal</h3>
+                                    <a href="#" class="add_to_favourites">
+                                        <img src="images/catalog/add_to_favourites.png">
+                                    </a>
+                                </div>
+                                <a href="#" class="lightbox">
+                                    <img src="images/catalog/lightbox.png">
+                                </a>
+                            </div>
+                            <!-- end: Catalog Category Item -->
+                            <!-- start: Catalog Category Item -->
+                            <div class="catalog_category_item">
+                                <img src="images/catalog/sample_list_image_3.jpg">
+                                <div class="catalog_category_item_header">
+                                    <h3>Caramel</h3>
+                                    <a href="#" class="add_to_favourites">
+                                        <img src="images/catalog/add_to_favourites.png">
+                                    </a>
+                                </div>
+                                <a href="#" class="lightbox">
+                                    <img src="images/catalog/lightbox.png">
+                                </a>
+                            </div>
+                            <!-- end: Catalog Category Item -->
+                            <!-- start: Catalog Category Item -->
+                            <div class="catalog_category_item">
+                                <img src="images/catalog/sample_list_image_4.jpg">
+                                <div class="catalog_category_item_header">
+                                    <h3>Charcoal</h3>
+                                    <a href="#" class="add_to_favourites">
+                                        <img src="images/catalog/add_to_favourites.png">
+                                    </a>
+                                </div>
+                                <a href="#" class="lightbox">
+                                    <img src="images/catalog/lightbox.png">
+                                </a>
+                            </div>
+                            <!-- end: Catalog Category Item -->
+
+                        </div>
+                        <!-- start: Catalog List Page INNER Wrapper -->
+
+                    </div>
+                    <!-- end: Catalog List Page OUTER Wrapper -->
+                </div>
+                <!-- end: Dry Stack -->
+                <!-- start: Phoenix -->
+                <div class="content_item catalog background about_us top left" style="background-image:url(images/catalog/Phoenix.jpg);">
+
+                    <!-- start: Catalog List Page OUTER Wrapper -->
+                    <div class="catalog_list_outer_wrapper">
+                        <!-- start: Hover Description -->
+                        <div class="hover_description">
+                            <h1>Stones</h1>
+                            <h2>Phoenix</h2>
+                        </div>
+                        <!-- start: Hover Description -->
+                        <!-- start: Catalog List Page INNER Wrapper -->
+                        <div class="catalog_list_inner_wrapper">
+                            <p>
+                                The classic style “Phoenix” Fusion Stone system incorporates mortar. This traditional bonding agent makes a significant contribution to an elegantly handsome and professionally finished appearance you’ll be proud of.
+                                <br />
+                                The only challenge for you will be choosing between Cambria and Silverado, the two gorgeous Phoenix colours. That, and convincing your astonished friends it is a veneer.
+                            </p>
+                            <!-- start: Catalog Category Item -->
+                            <div class="catalog_category_item">
+                                <img src="images/catalog/sample_list_image_1.jpg">
+                                <div class="catalog_category_item_header">
+                                    <h3>Cambria</h3>
+                                    <a href="#" class="add_to_favourites">
+                                        <img src="images/catalog/add_to_favourites.png">
+                                    </a>
+                                </div>
+                                <a href="#" class="lightbox">
+                                    <img src="images/catalog/lightbox.png">
+                                </a>
+                            </div>
+                            <!-- end: Catalog Category Item -->
+                            <!-- start: Catalog Category Item -->
+                            <div class="catalog_category_item">
+                                <img src="images/catalog/sample_list_image_2.jpg">
+                                <div class="catalog_category_item_header">
+                                    <h3>Silverado</h3>
+                                    <a href="#" class="add_to_favourites">
+                                        <img src="images/catalog/add_to_favourites.png">
+                                    </a>
+                                </div>
+                                <a href="#" class="lightbox">
+                                    <img src="images/catalog/lightbox.png">
+                                </a>
+                            </div>
+                            <!-- end: Catalog Category Item -->
+                            <!-- start: Catalog Category Item -->
+                            <div class="catalog_category_item">
+                                <img src="images/catalog/sample_list_image_3.jpg">
+                                <div class="catalog_category_item_header">
+                                    <h3>Cambria</h3>
+                                    <a href="#" class="add_to_favourites">
+                                        <img src="images/catalog/add_to_favourites.png">
+                                    </a>
+                                </div>
+                                <a href="#" class="lightbox">
+                                    <img src="images/catalog/lightbox.png">
+                                </a>
+                            </div>
+                            <!-- end: Catalog Category Item -->
+                            <!-- start: Catalog Category Item -->
+                            <div class="catalog_category_item">
+                                <img src="images/catalog/sample_list_image_4.jpg">
+                                <div class="catalog_category_item_header">
+                                    <h3>Silverado</h3>
+                                    <a href="#" class="add_to_favourites">
+                                        <img src="images/catalog/add_to_favourites.png">
+                                    </a>
+                                </div>
+                                <a href="#" class="lightbox">
+                                    <img src="images/catalog/lightbox.png">
+                                </a>
+                            </div>
+                            <!-- end: Catalog Category Item -->
+
+                        </div>
+                        <!-- start: Catalog List Page INNER Wrapper -->
+
+                    </div>
+                    <!-- end: Catalog List Page OUTER Wrapper -->
+                </div>
+                <!-- end: Phoenix -->
+                <!-- start: Accesories -->
+                <div class="content_item catalog background about_us top left" style="background-image:url(images/catalog/Accessories.jpg);">
+
+                    <!-- start: Catalog List Page OUTER Wrapper -->
+                    <div class="catalog_list_outer_wrapper">
+                        <!-- start: Hover Description -->
+                        <div class="hover_description">
+                            <h1>Stones</h1>
+                            <h2>Accesories</h2>
+                        </div>
+                        <!-- start: Hover Description -->
+                        <!-- start: Catalog List Page INNER Wrapper -->
+                        <div class="catalog_list_inner_wrapper">
+                            <p>Your Fusion Stone project can be beautifully enhanced with the addition of one or several of the following creative accessory elements.</p>
+                            <!-- start: Catalog Category Item -->
+                            <div class="catalog_category_item">
+                                <img src="images/catalog/sample_list_image_1.jpg">
+                                <div class="catalog_category_item_header">
+                                    <h3>Cocoa</h3>
+                                    <a href="#" class="add_to_favourites">
+                                        <img src="images/catalog/add_to_favourites.png">
+                                    </a>
+                                </div>
+                                <a href="#" class="lightbox">
+                                    <img src="images/catalog/lightbox.png">
+                                </a>
+                            </div>
+                            <!-- end: Catalog Category Item -->
+                            <!-- start: Catalog Category Item -->
+                            <div class="catalog_category_item">
+                                <img src="images/catalog/sample_list_image_2.jpg">
+                                <div class="catalog_category_item_header">
+                                    <h3>Chamois</h3>
+                                    <a href="#" class="add_to_favourites">
+                                        <img src="images/catalog/add_to_favourites.png">
+                                    </a>
+                                </div>
+                                <a href="#" class="lightbox">
+                                    <img src="images/catalog/lightbox.png">
+                                </a>
+                            </div>
+                            <!-- end: Catalog Category Item -->
+                            <!-- start: Catalog Category Item -->
+                            <div class="catalog_category_item">
+                                <img src="images/catalog/sample_list_image_3.jpg">
+                                <div class="catalog_category_item_header">
+                                    <h3>Ash</h3>
+                                    <a href="#" class="add_to_favourites">
+                                        <img src="images/catalog/add_to_favourites.png">
+                                    </a>
+                                </div>
+                                <a href="#" class="lightbox">
+                                    <img src="images/catalog/lightbox.png">
+                                </a>
+                            </div>
+                            <!-- end: Catalog Category Item -->
+                            <!-- start: Catalog Category Item -->
+                            <div class="catalog_category_item">
+                                <img src="images/catalog/sample_list_image_4.jpg">
+                                <div class="catalog_category_item_header">
+                                    <h3>Category 4</h3>
+                                    <a href="#" class="add_to_favourites">
+                                        <img src="images/catalog/add_to_favourites.png">
+                                    </a>
+                                </div>
+                                <a href="#" class="lightbox">
+                                    <img src="images/catalog/lightbox.png">
+                                </a>
+                            </div>
+                            <!-- end: Catalog Category Item -->
+
+                        </div>
+                        <!-- start: Catalog List Page INNER Wrapper -->
+
+                    </div>
+                    <!-- end: Catalog List Page OUTER Wrapper -->
+                </div>
+                <!-- end: Accesories -->
+                <!-- start: Inspiration Page 1 -->
+                <div class="content_item background about_us top left" style="background-image:url(images/about_us/3_bg.jpg)">
+                    <div class="hover_description">
+                        <h1>Inspirations</h1>
+                        <h2>Great lake</h2>
+                    </div>
+                    <div class="inspiration_content full">
+                        <div class="inspiration_item">
+                            <img src="images/inspirations/1.jpg">
+                            <a href="#" class="add_to_favourites">
+                                <img src="images/catalog/add_to_favourites.png">
+                            </a>
+                            <a href="#" class="lightbox"></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- end: Inspiration Page 1 -->
+                <!-- start: Inspiration Page 2 -->
+                <div class="content_item background about_us top left" style="background-image:url(images/about_us/3_bg.jpg)">
+                    <div class="hover_description">
+                        <h1>Inspirations</h1>
+                        <h2>Dry-Stack</h2>
+                    </div>
+                    <div class="inspiration_content quarters">
+
+                        <!-- start: Inspiration Item 1 -->
+                        <div class="inspiration_item">
+                            <img src="images/inspirations/2.jpg">
+                            <a href="#" class="add_to_favourites">
+                                <img src="images/catalog/add_to_favourites.png">
+                            </a>
+                            <a href="#" class="lightbox"></a>
+                        </div>
+                        <!-- end: Inspiration Item 1 -->
+                        <!-- start: Inspiration Item 2 -->
+                        <div class="inspiration_item">
+                            <img src="images/inspirations/3.jpg">
+                            <a href="#" class="add_to_favourites">
+                                <img src="images/catalog/add_to_favourites.png">
+                            </a>
+                            <a href="#" class="lightbox"></a>
+                        </div>
+                        <!-- end: Inspiration Item 2 -->
+                        <!-- start: Inspiration Item 3 -->
+                        <div class="inspiration_item">
+                            <img src="images/inspirations/4.jpg">
+                            <a href="#" class="add_to_favourites">
+                                <img src="images/catalog/add_to_favourites.png">
+                            </a>
+                            <a href="#" class="lightbox"></a>
+                        </div>
+                        <!-- end: Inspiration Item 3 -->
+                        <!-- start: Inspiration Item 4 -->
+                        <div class="inspiration_item">
+                            <img src="images/inspirations/5.jpg">
+                            <a href="#" class="add_to_favourites">
+                                <img src="images/catalog/add_to_favourites.png">
+                            </a>
+                            <a href="#" class="lightbox"></a>
+                        </div>
+                        <!-- end: Inspiration Item 4 -->
+
+                    </div>
+                </div>
+                <!-- end: Inspiration Page 2 -->
+                <!-- start: Inspiration Page 3 -->
+                <div class="content_item background about_us top left" style="background-image:url(images/about_us/3_bg.jpg)">
+                    <div class="hover_description">
+                        <h1>Inspirations</h1>
+                        <h2>Great lake</h2>
+                    </div>
+                    <div class="inspiration_content thirds">
+
+                        <!-- start: Inspiration Item 1 -->
+                        <div class="inspiration_item">
+                            <img src="images/inspirations/6.jpg">
+                            <a href="#" class="add_to_favourites">
+                                <img src="images/catalog/add_to_favourites.png">
+                            </a>
+                            <a href="#" class="lightbox"></a>
+                        </div>
+                        <!-- end: Inspiration Item 1 -->
+                        <!-- start: Inspiration Item 2 -->
+                        <div class="inspiration_item">
+                            <img src="images/inspirations/7.jpg">
+                            <a href="#" class="add_to_favourites">
+                                <img src="images/catalog/add_to_favourites.png">
+                            </a>
+                            <a href="#" class="lightbox"></a>
+                        </div>
+                        <!-- end: Inspiration Item 2 -->
+                        <!-- start: Inspiration Item 3 -->
+                        <div class="inspiration_item">
+                            <img src="images/inspirations/8.jpg">
+                            <a href="#" class="add_to_favourites">
+                                <img src="images/catalog/add_to_favourites.png">
+                            </a>
+                            <a href="#" class="lightbox"></a>
+                        </div>
+                        <!-- end: Inspiration Item 3 -->
+
+                    </div>
+                </div>
+                <!-- end: Inspiration Page 3 -->
+
+            </div>
+        </div>
+    </div>
+    <!-- end: Main Content -->
+    <!-- start: Samples Landing Page -->
+    <div data-role="page" id="samples_landing" data-url="#samples_landing" tabindex="3">
+        <div class="ui-panel-wrapper">
+            <div class="samples_main_list_item">
+                <img src="images/samples_landing/1.jpg">
+                <a href="#samples" class="samples_link_to_section" onclick="showSamplesFooter();">Great Lakes</a>
+            </div>
+            <div class="samples_main_list_item">
+                <img src="images/samples_landing/2.jpg">
+                <a href="#samples" class="samples_link_to_section" onclick="showSamplesFooter();">Dry-Stack</a>
+            </div>
+            <div class="samples_main_list_item last">
+                <img src="images/samples_landing/1.jpg">
+                <a href="#samples" class="samples_link_to_section" onclick="showSamplesFooter();">Phoenix</a>
+            </div>
+        </div>
+    </div>
+    <!-- end: Samples Landing Page -->
+    <!-- start: Samples Pages -->
+    <div data-role="page" id="samples" data-url="#samples" tabindex="4">
+        <div class="ui-panel-wrapper">
+            <div class="slider">
+
+                <!-- start: Great Lakes -->
+                <div class="content_item samples background about_us top left" style="background-image:url(images/samples/1_bg.jpg);">
+
+                    <!-- start: Hover Description -->
+                    <div class="hover_description">
+                        <h1>Stones</h1>
+                        <h2>Great Lakes</h2>
+                    </div>
+                    <!-- start: Hover Description -->
+                    <!-- start: Samples List Page Wrapper -->
+                    <div class="samples_list_wrapper">
+
+                        <!-- start: Samples Category Item -->
+                        <div class="samples_category_item">
+                            <img src="images/samples/sample_item.jpg">
+                            <div class="samples_category_item_header">
+                                <h3>Brindle</h3>
+                                <a href="#" class="add_to_favourites">
+                                    <img src="images/catalog/add_to_favourites.png">
+                                </a>
+                            </div>
+                            <a href="#" class="lightbox">
+                                <img src="images/samples/lightbox.png">
+                            </a>
+                        </div>
+                        <!-- end: Samples Category Item -->
+                        <!-- start: Samples Category Item -->
+                        <div class="samples_category_item">
+                            <img src="images/samples/sample_item.jpg">
+                            <div class="samples_category_item_header">
+                                <h3>Fawn</h3>
+                                <a href="#" class="add_to_favourites">
+                                    <img src="images/catalog/add_to_favourites.png">
+                                </a>
+                            </div>
+                            <a href="#" class="lightbox">
+                                <img src="images/samples/lightbox.png">
+                            </a>
+                        </div>
+                        <!-- end: Samples Category Item -->
+                        <!-- start: Samples Category Item -->
+                        <div class="samples_category_item">
+                            <img src="images/samples/sample_item.jpg">
+                            <div class="samples_category_item_header">
+                                <h3>Raven</h3>
+                                <a href="#" class="add_to_favourites">
+                                    <img src="images/catalog/add_to_favourites.png">
+                                </a>
+                            </div>
+                            <a href="#" class="lightbox">
+                                <img src="images/samples/lightbox.png">
+                            </a>
+                        </div>
+                        <!-- end: Samples Category Item -->
+                        <!-- start: Samples Category Item -->
+                        <div class="samples_category_item">
+                            <img src="images/samples/sample_item.jpg">
+                            <div class="samples_category_item_header">
+                                <h3>Carbon</h3>
+                                <a href="#" class="add_to_favourites">
+                                    <img src="images/catalog/add_to_favourites.png">
+                                </a>
+                            </div>
+                            <a href="#" class="lightbox">
+                                <img src="images/samples/lightbox.png">
+                            </a>
+                        </div>
+                        <!-- end: Samples Category Item -->
+
+                    </div>
+                    <!-- end: Samples List Page Wrapper -->
+
+                </div>
+                <!-- end: Great Lakes -->
+                <!-- start: Dry-Stack -->
+                <div class="content_item samples background about_us top left" style="background-image:url(images/samples/1_bg.jpg);">
+
+                    <!-- start: Hover Description -->
+                    <div class="hover_description">
+                        <h1>Stones</h1>
+                        <h2>Dry-Stack</h2>
+                    </div>
+                    <!-- start: Hover Description -->
+                    <!-- start: Samples List Page Wrapper -->
+                    <div class="samples_list_wrapper">
+
+                        <!-- start: Samples Category Item -->
+                        <div class="samples_category_item">
+                            <img src="images/samples/sample_item.jpg">
+                            <div class="samples_category_item_header">
+                                <h3>Category 1</h3>
+                                <a href="#" class="add_to_favourites">
+                                    <img src="images/catalog/add_to_favourites.png">
+                                </a>
+                            </div>
+                            <a href="#" class="lightbox">
+                                <img src="images/samples/lightbox.png">
+                            </a>
+                        </div>
+                        <!-- end: Samples Category Item -->
+                        <!-- start: Samples Category Item -->
+                        <div class="samples_category_item">
+                            <img src="images/samples/sample_item.jpg">
+                            <div class="samples_category_item_header">
+                                <h3>Category 2</h3>
+                                <a href="#" class="add_to_favourites">
+                                    <img src="images/catalog/add_to_favourites.png">
+                                </a>
+                            </div>
+                            <a href="#" class="lightbox">
+                                <img src="images/samples/lightbox.png">
+                            </a>
+                        </div>
+                        <!-- end: Samples Category Item -->
+                        <!-- start: Samples Category Item -->
+                        <div class="samples_category_item">
+                            <img src="images/samples/sample_item.jpg">
+                            <div class="samples_category_item_header">
+                                <h3>Category 3</h3>
+                                <a href="#" class="add_to_favourites">
+                                    <img src="images/catalog/add_to_favourites.png">
+                                </a>
+                            </div>
+                            <a href="#" class="lightbox">
+                                <img src="images/samples/lightbox.png">
+                            </a>
+                        </div>
+                        <!-- end: Samples Category Item -->
+                        <!-- start: Samples Category Item -->
+                        <div class="samples_category_item">
+                            <img src="images/samples/sample_item.jpg">
+                            <div class="samples_category_item_header">
+                                <h3>Category 4</h3>
+                                <a href="#" class="add_to_favourites">
+                                    <img src="images/catalog/add_to_favourites.png">
+                                </a>
+                            </div>
+                            <a href="#" class="lightbox">
+                                <img src="images/samples/lightbox.png">
+                            </a>
+                        </div>
+                        <!-- end: Samples Category Item -->
+
+                    </div>
+                    <!-- end: Samples List Page Wrapper -->
+
+                </div>
+                <!-- end: Dry-Stack -->
+                <!-- start: Phoenix -->
+                <div class="content_item samples background about_us top left" style="background-image:url(images/samples/1_bg.jpg);">
+
+                    <!-- start: Hover Description -->
+                    <div class="hover_description">
+                        <h1>Stones</h1>
+                        <h2>Phoenix</h2>
+                    </div>
+                    <!-- start: Hover Description -->
+                    <!-- start: Samples List Page Wrapper -->
+                    <div class="samples_list_wrapper">
+
+                        <!-- start: Samples Category Item -->
+                        <div class="samples_category_item">
+                            <img src="images/samples/sample_item.jpg">
+                            <div class="samples_category_item_header">
+                                <h3>Category 1</h3>
+                                <a href="#" class="add_to_favourites">
+                                    <img src="images/catalog/add_to_favourites.png">
+                                </a>
+                            </div>
+                            <a href="#" class="lightbox">
+                                <img src="images/samples/lightbox.png">
+                            </a>
+                        </div>
+                        <!-- end: Samples Category Item -->
+                        <!-- start: Samples Category Item -->
+                        <div class="samples_category_item">
+                            <img src="images/samples/sample_item.jpg">
+                            <div class="samples_category_item_header">
+                                <h3>Category 2</h3>
+                                <a href="#" class="add_to_favourites">
+                                    <img src="images/catalog/add_to_favourites.png">
+                                </a>
+                            </div>
+                            <a href="#" class="lightbox">
+                                <img src="images/samples/lightbox.png">
+                            </a>
+                        </div>
+                        <!-- end: Samples Category Item -->
+                        <!-- start: Samples Category Item -->
+                        <div class="samples_category_item">
+                            <img src="images/samples/sample_item.jpg">
+                            <div class="samples_category_item_header">
+                                <h3>Category 3</h3>
+                                <a href="#" class="add_to_favourites">
+                                    <img src="images/catalog/add_to_favourites.png">
+                                </a>
+                            </div>
+                            <a href="#" class="lightbox">
+                                <img src="images/samples/lightbox.png">
+                            </a>
+                        </div>
+                        <!-- end: Samples Category Item -->
+                        <!-- start: Samples Category Item -->
+                        <div class="samples_category_item">
+                            <img src="images/samples/sample_item.jpg">
+                            <div class="samples_category_item_header">
+                                <h3>Category 4</h3>
+                                <a href="#" class="add_to_favourites">
+                                    <img src="images/catalog/add_to_favourites.png">
+                                </a>
+                            </div>
+                            <a href="#" class="lightbox">
+                                <img src="images/samples/lightbox.png">
+                            </a>
+                        </div>
+                        <!-- end: Samples Category Item -->
+
+                    </div>
+                    <!-- end: Samples List Page Wrapper -->
+
+                </div>
+                <!-- end: Phoenix -->
+
+            </div>
+        </div>
+    </div>
+    <!-- end: Samples Pages -->
+    <!-- start: Favourites -->
+    <div data-role="page" id="favorites" data-url="favorites" tabindex="5">
+        <div class="ui-panel-wrapper">
+            <!-- start: Stones Favourites -->
+            <div id="favorites_stones" class="favorites">
+                <h1>Favorites</h1>
+                <h2>Stones</h2>
+
+                <!-- start: Favorites Section -->
+                <div class="favorites_section">
+                    <h3>Great Lakes</h3>
+                    <!-- start: Catalog Category Item -->
+                    <div class="catalog_category_item">
+                        <img src="images/catalog/sample_list_image_1.jpg">
+                        <div class="catalog_category_item_header">
+                            <h3>Brindle</h3>
+                            <a href="#" class="add_to_favourites">
+                                <img src="images/catalog/add_to_favourites.png">
+                            </a>
+                        </div>
+                        <a href="#" class="lightbox">
+                            <img src="images/catalog/lightbox.png">
+                        </a>
+                    </div>
+                    <!-- end: Catalog Category Item -->
+                    <!-- start: Catalog Category Item -->
+                    <div class="catalog_category_item">
+                        <img src="images/catalog/sample_list_image_1.jpg">
+                        <div class="catalog_category_item_header">
+                            <h3>Raven</h3>
+                            <a href="#" class="add_to_favourites">
+                                <img src="images/catalog/add_to_favourites.png">
+                            </a>
+                        </div>
+                        <a href="#" class="lightbox">
+                            <img src="images/catalog/lightbox.png">
+                        </a>
+                    </div>
+                    <!-- end: Catalog Category Item -->
+                </div>
+                <!-- end: Favorites Section -->
+                <!-- start: Favorites Section -->
+                <div class="favorites_section">
+                    <h3>Dry-Stack</h3>
+                    <!-- start: Catalog Category Item -->
+                    <div class="catalog_category_item">
+                        <img src="images/catalog/sample_list_image_1.jpg">
+                        <div class="catalog_category_item_header">
+                            <h3>Caramel</h3>
+                            <a href="#" class="add_to_favourites">
+                                <img src="images/catalog/add_to_favourites.png">
+                            </a>
+                        </div>
+                        <a href="#" class="lightbox">
+                            <img src="images/catalog/lightbox.png">
+                        </a>
+                    </div>
+                </div>
+                <!-- end: Catalog Category Item -->
+                <!-- end: Favorites Section -->
+                <!-- start: Favorites Section -->
+                <div class="favorites_section">
+                    <h3>Phoenix</h3>
+                    <!-- start: Catalog Category Item -->
+                    <div class="catalog_category_item">
+                        <img src="images/catalog/sample_list_image_1.jpg">
+                        <div class="catalog_category_item_header">
+                            <h3>Cambria</h3>
+                            <a href="#" class="add_to_favourites">
+                                <img src="images/catalog/add_to_favourites.png">
+                            </a>
+                        </div>
+                        <a href="#" class="lightbox">
+                            <img src="images/catalog/lightbox.png">
+                        </a>
+                    </div>
+                </div>
+                <!-- end: Catalog Category Item -->
+                <!-- end: Favorites Section -->
+
+
+            </div>
+            <!-- end: Stones Favourites -->
+            <!-- start: Inspirations Favourites -->
+            <div id="favorites_inspirations" class="favorites">
+                <h1>&nbsp</h1>
+                <h2>Inspirations</h2>
+                <div class="favorites_section">
+                    <!-- start: Inspiration Listing Item -->
+                    <div class="inspiration_listing_item">
+                        <img src="images/favorites/inspiration_sample.png">
+                        <a href="#" class="add_to_favourites">
+                            <img src="images/catalog/add_to_favourites.png">
+                        </a>
+                        <a href="#" class="lightbox">
+                            <img src="images/catalog/lightbox.png">
+                        </a>
+                    </div>
+                    <!-- end: Inspiration Listing Item -->
+                    <!-- start: Inspiration Listing Item -->
+                    <div class="inspiration_listing_item">
+                        <img src="images/favorites/inspiration_sample.png">
+                        <a href="#" class="add_to_favourites">
+                            <img src="images/catalog/add_to_favourites.png">
+                        </a>
+                        <a href="#" class="lightbox">
+                            <img src="images/catalog/lightbox.png">
+                        </a>
+                    </div>
+                    <!-- end: Inspiration Listing Item -->
+                    <!-- start: Inspiration Listing Item -->
+                    <div class="inspiration_listing_item">
+                        <img src="images/favorites/inspiration_sample.png">
+                        <a href="#" class="add_to_favourites">
+                            <img src="images/catalog/add_to_favourites.png">
+                        </a>
+                        <a href="#" class="lightbox">
+                            <img src="images/catalog/lightbox.png">
+                        </a>
+                    </div>
+                    <!-- end: Inspiration Listing Item -->
+                    <!-- start: Inspiration Listing Item -->
+                    <div class="inspiration_listing_item">
+                        <img src="images/favorites/inspiration_sample.png">
+                        <a href="#" class="add_to_favourites">
+                            <img src="images/catalog/add_to_favourites.png">
+                        </a>
+                        <a href="#" class="lightbox">
+                            <img src="images/catalog/lightbox.png">
+                        </a>
+                    </div>
+                    <!-- end: Inspiration Listing Item -->
+                    <!-- start: Inspiration Listing Item -->
+                    <div class="inspiration_listing_item">
+                        <img src="images/favorites/inspiration_sample.png">
+                        <a href="#" class="add_to_favourites">
+                            <img src="images/catalog/add_to_favourites.png">
+                        </a>
+                        <a href="#" class="lightbox">
+                            <img src="images/catalog/lightbox.png">
+                        </a>
+                    </div>
+                    <!-- end: Inspiration Listing Item -->
+                    <!-- start: Inspiration Listing Item -->
+                    <div class="inspiration_listing_item">
+                        <img src="images/favorites/inspiration_sample.png">
+                        <a href="#" class="add_to_favourites">
+                            <img src="images/catalog/add_to_favourites.png">
+                        </a>
+                        <a href="#" class="lightbox">
+                            <img src="images/catalog/lightbox.png">
+                        </a>
+                    </div>
+                    <!-- end: Inspiration Listing Item -->
+                    <!-- start: Inspiration Listing Item -->
+                    <div class="inspiration_listing_item">
+                        <img src="images/favorites/inspiration_sample.png">
+                        <a href="#" class="add_to_favourites">
+                            <img src="images/catalog/add_to_favourites.png">
+                        </a>
+                        <a href="#" class="lightbox">
+                            <img src="images/catalog/lightbox.png">
+                        </a>
+                    </div>
+                    <!-- end: Inspiration Listing Item -->
+                </div>
+            </div>
+            <!-- end: Inspirations Favourites -->
+        </div>
+    </div>
+    <!-- end: Favourites -->
+    <!-- start: Where to Purchase -->
+    <div data-role="page" id="purchase" data-url="purchase" tabindex="6">
+        <div class="ui-panel-wrapper">
+            <div id="purchase_content">
+                <div id="purchase_top">
+                    <h1>Where to purchase</h1>
+                    <p>Fusion Stone is an easy and budget-friendly way to beautifully upgrade your home, inside and out. Available in three distinct textures, all backed by a Lifetime Guarantee.</p>
+                </div>
+                <div id="purchase_form">
+                    <form>
+                        <input type="text" placeholder="ex. Papua New Guinea">
+                        <a href="#" id="purchase_submit">
+                            <img src="images/where_to_purchase/search_icon.png">
+                        </a>
+                    </form>
+                </div>
+                <div id="purchase_map">
+                    <img src="images/where_to_purchase/sample_map.jpg" width="2048" height="977">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end: Where to Purchase -->
+    <!-- start: Contact -->
+    <div data-role="page" id="contact" data-url="contact" tabindex="0">
+        <div class="ui-panel-wrapper">
+            <div id="contact_content">
+                <div id="contact_left">
+                    <div class="spacer">
+                        <div class="hover_description">
+                            <h1>Contact Fusion</h1>
+                            <h2><span>Want help with your project?</span><br>CONTACT A STONE GENIUS</h2>
+                        </div>
+                        <p>We can help you make decisions<br>about stone selection, design,<br>colour, instalation and more.</p>
+                        <form>
+                            <div class="form_row">
+                                <label>First name</label>
+                                <input type="text">
+                            </div>
+                            <div class="form_row">
+                                <label>Last name</label>
+                                <input type="text">
+                            </div>
+                            <div class="form_row">
+                                <label>I'm a</label>
+                                <div id="radio">
+                                    <input type="radio">
+                                    <label>Contractor</label>
+                                    <input type="radio">
+                                    <label>Homeowner</label>
+                                    <input type="radio">
+                                    <label>Architect</label>
+                                    <input type="radio">
+                                    <label>Designer</label>
+                                </div>
+                            </div>
+                            <div class="form_row">
+                                <label>Email address</label>
+                                <input type="text">
+                            </div>
+                            <div class="form_row">
+                                <label>Phone number</label>
+                                <input type="text">
+                            </div>
+                            <div class="form_row">
+                                <input type="submit" value="Submit" data-role="none" />
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+                <div id="contact_right">
+                    <img src="images/contact/contact_bg.jpg">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end: Contact -->
+    <!-- start: Footer Catalog -->
+    <div id="footer" class="footer" data-role="footer" data-position="fixed" data-tap-toggle="false">
+        <ul>
+            <li><a data-transition="slide" href="#" class="">About Fusion</a></li>
+            <li><a data-transition="slide" href="#">Great Lakes</a></li>
+            <li><a data-transition="slide" href="#">Dry Stack</a></li>
+            <li><a data-transition="slide" href="#">Phoenix</a></li>
+            <li><a data-transition="slide" href="#">Accessories</a></li>
+            <li class="last"><a data-transition="slide" href="#">Inspirations</a></li>
+        </ul>
+    </div>
+    <!-- end: Footer Catalog -->
+    <!-- start: Footer Samples -->
+    <div id="footer_samples" class="footer" data-role="footer" data-position="fixed" data-tap-toggle="false">
+        <ul>
+            <li><a data-transition="slide" href="#" class="act" counter="0">Great Lakes</a></li>
+            <li><a data-transition="slide" href="#" counter="1">Dry Stack</a></li>
+            <li><a data-transition="slide" href="#" counter="2">Phoenix</a></li>
+        </ul>
+    </div>
+    <!-- end: Footer Samples -->
+    <!-- start: Lightbox -->
+    <div id="lightbox">
+        <div id="lightbox_header">
+            <h1>Gallery title</h1>
+            <a href="#" id="close_lightbox">
+                <img src="images/lightbox/close.png">
+            </a>
+            <a href="#" id="lightbox_favorite">
+                <img src="images/lightbox/favorite.png">
+            </a>
+            <p id="lightbox_counter"><span class="counter">1</span> / <span class="total">4</span></p>
+        </div>
+        <div class="lightbox_slider">
+            <div class="lightbox_slider_item">
+                <img src="images/inspirations/1.jpg">
+            </div>
+            <div class="lightbox_slider_item">
+                <img src="images/inspirations/1.jpg">
+            </div>
+            <div class="lightbox_slider_item">
+                <img src="images/inspirations/1.jpg">
+            </div>
+            <div class="lightbox_slider_item">
+                <img src="images/inspirations/1.jpg">
+            </div>
+            <div class="lightbox_slider_item">
+                <img src="images/inspirations/1.jpg">
+            </div>
+        </div>
+    </div>
+    <!-- start: Lightbox -->
+</body>
+</html>

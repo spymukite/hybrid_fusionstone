@@ -1,0 +1,114 @@
+/* Less CSS Document */
+/* Will be auto compiled to CSS file on save */
+ 
+@screenWidth:@sw;
+@screenHeight:@sh;
+
+@half_width:floor(@screenWidth / 2);
+@third_width:floor(@screenWidth / 3);
+@quarter_width:floor(@screenWidth / 4);
+
+@half_height:floor(@screenHeight / 2);
+@third_height:floor(@screenHeight / 3);
+@quarter_height:floor(@screenHeight / 4);
+
+@landing_link_height:ceil(@screenHeight / 9);
+@landing_link_padding:ceil(@screenWidth / 30);
+
+@header_height:ceil(@screenHeight / 15.3);
+@half_header_height:ceil(@header_height / 2);
+@find_a_dealer_border:ceil(@header_height * 0.3);
+@find_a_dealer_padding:ceil(@header_height * 0.6);
+
+@font_size_35:ceil(@header_height * 0.35);
+@font_size_accessories:ceil(@header_height * 0.35 / 1.8);
+@footer_li_width:floor(@screenWidth / 6);
+@footer_li_last_width:@screenWidth - 5 * @footer_li_width;
+@footer_a_border:ceil(@header_height * 0.14);
+
+@footer_samples_li_width:floor(@screenWidth / 3);
+@footer_samples_li_last_width:@screenWidth - 2 * @footer_samples_li_width;
+
+@menu_border:ceil(@header_height * 0.12);
+@menu_padding:ceil(@header_height * 0.3);
+@left_menu_item_line_height:ceil(@header_height * 0.4);
+@left_menu_item_padding:ceil(@header_height * 0.3);
+
+@social_media_padding:ceil(@header_height * 0.2);
+
+@hover_description_width:floor(@screenWidth / 3);
+@hover_description_padding:ceil(@header_height / 2);
+@hover_description_h1:ceil(@header_height * 0.8);
+@hover_description_h1_font_size:ceil(@hover_description_h1 * 0.4);
+@hover_description_h1_border:ceil(@header_height *  0.3);
+@hover_description_h2_font_size:ceil(@header_height * 0.5);
+@hover_description_h2_line_height:ceil(@header_height * 0.8);
+@hover_description_h2_padding:ceil(@header_height * 0.1);
+@hover_description_p_font_size:ceil(@hover_description_h1 * 0.35);
+@hover_description_p_line_height:ceil(@hover_description_h1 * 0.6);
+
+@diy_image:floor(@screenHeight * 0.5);
+
+@catalog_content_padding:ceil(@header_height * 0.4);
+@catalog_content_padding_bottom:@header_height;
+@catalog_listing_item_width:floor(@screenWidth / 4.65);
+@catalog_listing_item_header_height:floor(@header_height * 0.8);
+@catalog_listing_item_header_padding_left:floor(@header_height * 0.4);
+@catalog_listing_item_margin_right:floor(((@screenWidth - 2 * @catalog_content_padding) - 4 * @catalog_listing_item_width) / 3);
+@catalog_listing_item_margin_bottom:floor(@header_height * 0.6);
+
+@inspiration_add_to_favourite_position:ceil(@header_height / 2);
+
+@inpiration_thirds_left_width:@screenWidth - @third_width;
+
+@samples_landing_last_width: @screenWidth - @third_width - @third_width;
+@samples_landing_link_height: ceil(@header_height * 1.65);
+@samples_landing_link_width: @third_width - @header_height;
+@samples_landing_link_position_left: ceil(@header_height * 0.5);
+@samples_landing_link_font_size:ceil(@header_height * 0.7);
+
+@samples_listing_wrapper_padding_side: (@header_height * 0.9);
+@samples_listing_wrapper_padding_top: (@header_height * 0.85);
+
+@samples_item_width:ceil(@screenWidth / 2.32);
+@samples_item_margin_right: @screenWidth - 2 * @samples_item_width - 2 * @samples_listing_wrapper_padding_side;
+
+@favorites_content_padding: floor(@header_height * 0.4);
+@favorites_h1_margin_top: floor(@header_height * 1.5);
+@favorites_h1_margin_bottom: floor(@header_height * 0.4);
+@favorites_h2_padding_right: 4 * @hover_description_padding;
+@favorites_h3_height: floor(@header_height * 0.8);
+
+@purchase_top_height: floor(@header_height * 5.5);
+@purchase_h1_padding_top: floor(@header_height * 1.45);
+@purchase_h1_padding_bottom: floor(@header_height * 0.35);
+@purchase_h1_font_size:floor(@header_height * 0.7);
+@purchase_h1_line_height:floor(@header_height * 0.85);
+@purchase_form_border_width: floor(@header_height * 0.3);
+@purchase_form_padding_left: floor(@header_height * 0.5);
+@purchase_map_height: @screenHeight - @purchase_top_height;
+
+@contact_spacer_width: floor(@half_width / 1.1);
+@contact_spacer_padding_top: floor(@header_height * 1.7);
+@contact_spacer_p_font_size: floor(@header_height * 0.45);
+@contact_spacer_p_line_height: floor(@header_height * 0.7);
+@contact_spacer_p_padding: floor(@header_height * 0.45 * 0.5);
+
+@contact_input_height:floor(@header_height * 0.7);
+@contact_input_margin_bottom: floor(@header_height * 0.4);
+
+@lightbox_heder_font_size: floor(@header_height * 0.5);
+
+@estimator_spacer_height: floor(@header_height * 3.2);
+@estimator_content_height: @screenHeight - @estimator_spacer_height - 2 * @header_height;
+@estimator_column_width: floor((@screenWidth - floor(@header_height * 0.35) - floor(@header_height * 0.35)) / 3);
+@estimator_column_margin: floor(@header_height * 0.35);
+@estimator_column_yellow_border: floor(@header_height * 0.3);
+@estimator_total_font_size: floor(@header_height * 0.3);
+@estimator_total_line_height: floor(@header_height * 0.45);
+@estimator_total_padding_top_and_bottom:floor(@header_height * 0.2);
+@estimator_total_h3_font_size: floor(@header_height * 0.4);
+@estimator_total_value_font_size: floor(@header_height * 0.5);
+@estimator_td_width:@estimator_column_width - 4 * @estimator_column_yellow_border;
+@estimator_td_font_size_20: floor(@header_height * 0.2);
+@estimator_td_font_size_15: floor(@header_height * 0.15);

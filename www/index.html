@@ -1,0 +1,1450 @@
+﻿<!DOCTYPE html>
+<html ng-app="Fusion_App">
+<head>
+    <meta charset="UTF-8">
+    <title>Fusion</title>
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0, target-densitydpi=device-dpi" id="viewport" /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0" id="viewport" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+    <!--<script src="http://app.fusionstone.ca/typo3conf/ext/fusion_app/Resources/Public/php/data_json.php"></script>=
+    <script src="http://app.fusionstone.ca/typo3conf/ext/fusion_app/Resources/Public/php/get_coordinates.php"></script>-->
+    <script src="./js/fsdata.js"></script>
+    <script src="./js/fscoordinates.js"></script>
+
+    <script src="./js/screen_size.js"></script>
+    <script src="./js/strings.js"></script>
+    <!--<link rel="stylesheet/less" type="text/css" href="./css/colors.less" />
+    <link rel="stylesheet/less" type="text/css" href="./css/variables.less" />-->
+    <link rel="stylesheet/less" type="text/css" href="./css/fusion.less" />
+    <link href="./jquery-mobile-1-4-5/jquery.mobile.structure-1.4.5.css" rel="stylesheet" type="text/css">
+    <link href="./js/slick/slick.css" rel="stylesheet" type="text/css">
+    <script src="./js/jquery-1.11.2.min.js" type="text/javascript"></script>
+    <script src="./jquery-mobile-1-4-5/jquery.mobile-1.4.5.min.js" type="text/javascript"></script>
+    <script src="./js/slick/slick.min.js" type="text/javascript"></script>
+    <!--<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places,visualization"></script>-->
+
+    <link rel="stylesheet" type="text/css" href="./js/jqueryui/jquery-ui.min.css" />
+
+    <script src="./js/jqueryui/jquery-ui.min.js" type="text/javascript"></script>
+
+    <script>
+        var tmpWidth = effectiveDeviceWidth();
+        var tmpHeight = effectiveDeviceHeight();
+
+        if (tmpWidth < tmpHeight) {
+            var tmp = tmpWidth;
+            tmpWidth = tmpHeight;
+            tmpHeight = tmp;
+        }
+        less = {
+            env: "development",
+            async: false,
+            fileAsync: false,
+            poll: 1000,
+            functions: {},
+            dumpLineNumbers: "comments",
+            globalVars: {
+                sw: tmpWidth + "px",
+                sh: tmpHeight + "px"
+            },
+        };
+
+        var IsOnline = true;
+		
+		function SetColor(t, e){
+			if($(t).hasClass('changed'))
+				return;
+			$(t).val("");
+			$(t).css("color", "#000" );
+			$(t).addClass('changed');
+		}
+		
+		function AllowOnlyNumbers(e){
+			// Allow: backspace, delete, tab, escape, enter and .
+			if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+				 // Allow: Ctrl+A, Command+A
+				(e.keyCode == 65 && ( e.ctrlKey === true || e.metaKey === true ) ) || 
+				 // Allow: home, end, left, right, down, up
+				(e.keyCode >= 35 && e.keyCode <= 40)) {
+					 // let it happen, don't do anything
+					 return;
+			}
+			// Ensure that it is a number and stop the keypress
+			if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+				e.preventDefault();
+			}
+		}
+    </script>
+
+    <!-- Visualizer -->
+    <link rel="stylesheet" type="text/css" href="./visualizer/fonts/font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" type="text/css" href="./visualizer/fonts/source-sans-pro/font.css" />
+    <link rel="stylesheet" type="text/css" href="./visualizer/fonts/montserrat/font.css" />
+    <link rel="stylesheet" type="text/css" href="./visualizer/css/style.css" />
+    <script src="./visualizer/js/raphael-min.js" type="text/javascript"></script>
+    <script src="./visualizer/js/rgbcolor.js" type="text/javascript"></script>
+    <script src="./visualizer/js/StackBlur.js" type="text/javascript"></script>
+    <script src="./visualizer/js/canvg.min.js" type="text/javascript"></script>
+    <script src="./visualizer/js/data.js" type="text/javascript"></script>
+    <script src="./visualizer/js/app.js" type="text/javascript"></script>
+
+    <script src="./js/less.min.js" type="text/javascript"></script>
+    <script src="./Scripts/angular.js"></script>
+    <script src="./js/fuzion.js" type="text/javascript"></script>
+
+
+    <script src="./js/fusion.js" type="text/javascript"></script>
+    <!--<script src="./js/maps.js"></script>-->
+    <script src="./js/app.js"></script>
+    <script>
+
+        $(function () {
+            $("body").pagecontainer({ defaults: true });
+
+            $("[data-role='navbar']").navbar();
+            $("[data-role='header'], [data-role='footer']").toolbar();
+
+            $("body > [data-role='panel']").panel();
+            $("body > [data-role='panel'] [data-role='listview']").listview();
+
+        });
+        $(document).on("pagecreate", function () {
+            if (headerVisible == false)
+                showHeader();
+        });
+
+        $(document).on("pagebeforeshow", "#language", function () {
+            hideCatalogFooter();
+            hideSamplesFooter();
+            hideHeader();
+        });
+        $(document).on("pagebeforeshow", "#catalog_or_samples", function () {
+            hideCatalogFooter();
+            hideSamplesFooter();
+            if (headerVisible == false)
+                showHeader();
+            ClearActiveMenuItem();
+            //hideHeader();
+        });
+        $(document).on("pagebeforeshow", "#samples_landing", function () {
+            hideCatalogFooter();
+            hideSamplesFooter();
+
+        });
+        $(document).on("pagebeforeshow", "#samples", function () {
+            if (samplesFooterVisible == false)
+                showSamplesFooter();
+            hideCatalogFooter();
+
+            ClearActiveMenuItem();
+
+        });
+        $(document).on("pagebeforeshow", "#main_content", function () {
+            if (catalogFooterVisible == false)
+                showCatalogFooter();
+            hideSamplesFooter();
+
+            SelectActiveMenuItem($('#main_content_a'));
+        });
+        $(document).on("pagebeforeshow", "#purchase", function () {
+            hideCatalogFooter();
+            hideSamplesFooter();
+        });
+
+        $(document).on('pageshow', '#purchase', function () {
+			if (IsOnline){
+				google.maps.event.trigger(map, 'resize');
+		   
+				var coords = new google.maps.LatLng(latitude, longitude);
+				map.setOptions({ 'center': coords, 'zoom':14 });
+			}
+        });
+
+        $(document).on("pagebeforeshow", "#contact", function () {
+            hideCatalogFooter();
+            hideSamplesFooter();
+        });
+        $(document).on("pagebeforeshow", "#estimator", function () {
+            hideCatalogFooter();
+            hideSamplesFooter();
+        });
+        $(document).on("pagebeforeshow", "#visualizer", function () {
+            hideCatalogFooter();
+            hideSamplesFooter();
+        });
+
+
+    </script>
+
+    <script src="./js/jquery.ui.touch-punch.min.js" type="text/javascript"></script>
+
+</head>
+<body ng-controller="Control_General">
+
+    <div id="loadingScreen">
+        <div class="ui-panel-wrapper">
+            <img ng-if="Language == 1" src="./images/landing_pages/logo.png" class="landing_logo">
+            <img ng-if="Language == 2" src="./images/landing_pages/logo_fr.png" class="landing_logo">
+            <h1>Loading Galleries ...</h1>
+            <h2>Please wait for a moment ...</h2>
+			<img src="./images/spiner.gif" class="loading_spiner" style="margin:0 !important; padding:0 !important; max-height:50px; width: auto;">
+        </div>
+    </div>
+
+
+    <script>
+        var DownloadURL = Host + '/uploads/tx_fusionapp/';
+        UrlToImages = DownloadURL;
+        isCordovaApp = true;
+
+
+    </script>
+
+    <a ng-click="LoadApp()" id="loadingClick" style="position:absolute; visibility:hidden;">Click</a>
+    <a ng-click="SetOfflineMode()" id="offlineClick" style="position:absolute; visibility:hidden;">Click</a>
+    <a ng-click="SetOnLineMode()" id="onLineClick" style="position:absolute; visibility:hidden;">Click</a>
+
+    <!-- start: Main Menu -->
+    <div data-id="left_menu" data-role="panel" data-position="left" data-position-fixed="true" data-display="push" id="left_menu" class="left_menu ui-panel ui-panel-position-left ui-panel-display-push ui-body-a">
+        <div class="ui-panel-inner">
+            <ul class="left_inner first">
+                <li class="left_menu_item"><a id="main_content_a" onclick="SelectActiveMenuItem(this)" href="#main_content" ng-click="ChangeLocation('#main_content')">{{Strings.MainMenu.AboutFusion}}</a></li>
+                <li class="left_menu_item"><a onclick="SelectActiveMenuItem(this)" href="#estimator" ng-click="ChangeLocation('#estimator')" class="act">{{Strings.MainMenu.Estimator}}</a></li>
+                <li class="left_menu_item"><a onclick="SelectActiveMenuItem(this)" href="#purchase" id="where_to_purchase" ng-click="ChangeLocation('#purchase')">{{Strings.MainMenu.WhereToPurchase}}</a></li>
+                <li class="left_menu_item"><a onclick="SelectActiveMenuItem(this); hideCatalogFooter(); hideSamplesFooter();" href="#elevate" ng-click="ChangeLocation('#elevate')">Elevate</a></li>
+                <li class="left_menu_item no_border"><a onclick="SelectActiveMenuItem(this)" href="#contact" ng-click="ChangeLocation('#contact')">{{Strings.MainMenu.Contact}}</a></li>
+            </ul>
+            <ul class="left_inner last">
+                <li class="left_menu_item"><a href="#language" onclick="SelectActiveMenuItem(this); hideHeader(); hideCatalogFooter(); hideSamplesFooter();">{{Strings.MainMenu.ChangeLanguage}}</a></li>
+<!--                 <li class="left_menu_item"><a href="#" onclick="SelectActiveMenuItem(this)">{{Strings.MainMenu.Support}}</a></li> -->
+                <li class="left_menu_item social_media no_border">
+                    <a href="#" onclick="window.open('https://twitter.com/fusionstone', '_system', 'location=yes')">
+                        <img src="./images/social_media/twitter.png">
+                    </a>
+                    <a href="#" onclick="window.open('https://www.facebook.com/1558853024338216', '_system', 'location=yes')">
+                        <img src="./images/social_media/facebook.png">
+                    </a>
+                    <a href="#" onclick="window.open('https://www.youtube.com/user/fusionstone', '_system', 'location=yes')">
+                        <img src="./images/social_media/youtube.png">
+                    </a>
+                    <a href="#" onclick="window.open('https://plus.google.com/+FusionStoneCanada/', '_system', 'location=yes')">
+                        <img src="./images/social_media/gplus.png">
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- end: Main Menu -->
+    <!-- header begin -->
+    <div class="header" data-role="header" data-position="fixed" data-tap-toggle="false">
+        <a href="#left_menu" id="main_menu_toggle">
+            <img src="./images/menu_icon.png">
+        </a>
+        <a href="" ng-click="GoBack()" id="back_button" class="ui-btn-left ui-link ui-btn ui-shadow ui-corner-all">
+            <img src="./images/back_icon.png">
+        </a>
+        <a href="#catalog_or_samples" id="header_logo" class="ui-btn-left ui-link ui-btn ui-shadow ui-corner-all" data-transition="slide" data-direction="reverse" onclick="hideCatalogFooter(); hideSamplesFooter();">
+            <img src="./images/header_logo.png">
+        </a>
+        <a href="#purchase" ng-click="ChangeLocation('#purchase');" onclick="SelectActiveMenuItem($('#where_to_purchase'));" id="find_a_dealer_button" class="ui-btn-right ui-link ui-btn ui-shadow ui-corner-all" data-transition="slide" data-direction="reverse">
+            <span>{{Strings.MainMenu.FindADealer}} &nbsp;&nbsp;&nbsp;</span>
+            <img src="./images/find_a_dealer_pointer.png">
+        </a>
+        <a href="#favorites" ng-click="ChangeLocation('#favorites')" id="header_favourite" class="ui-btn-right ui-link ui-btn ui-shadow ui-corner-all" data-transition="slide" onclick="hideCatalogFooter(); hideSamplesFooter();">
+            <img src="./images/favorites_icon.png">
+            <span>&nbsp;&nbsp;</span>
+            <span>{{Favorites.length}}</span>
+        </a>
+    </div>
+    <!-- header end -->
+    <!-- start: Language Selection -->
+    <div data-role="page" id="language" data-url="language" tabindex="0">
+        <div class="ui-panel-wrapper">
+            <img ng-if="Language == 1" src="./images/landing_pages/logo.png" class="landing_logo">
+            <img ng-if="Language == 2" src="./images/landing_pages/logo_fr.png" class="landing_logo">
+            <a href="#catalog_or_samples" class="landing_link left" ng-click="ChangeLanguage(1)" data-transition="slide">English</a>
+            <a href="#catalog_or_samples" class="landing_link right" ng-click="ChangeLanguage(2)" data-transition="slide">FRANÇAIS</a>
+        </div>
+    </div>
+    <!-- end: Language Selection -->
+    <!-- start: Catalog or Samples Selection -->
+    <div data-role="page" id="catalog_or_samples" data-url="catalog_or_samples" tabindex="1">
+        <div class="ui-panel-wrapper">
+            <div class='title-container'>
+                <span class='upper bigtitle'>Elevate</span>
+                <span class='upper smalltitle'>Your Home With</span>
+            </div>
+
+            <img src="./images/landing_pages/main-logo.png" class="main-page-logo"><!-- ng-if="Language == 1" -->
+
+            <div class='buttons clearfix'>
+                <a href="#elevate" class='button altbg' ng-click="ChangeLocation('#elevate')" onclick="hideCatalogFooter(); hideSamplesFooter();">
+                    <table class='outer-table'><tr><td class='outer-cell'>
+                        <table class='inner-table'><tr>
+                            <td class='inner-cell'>
+                                <img src='images/landing_pages/icons/get-started.png'>
+                            </td>
+                            <td class='inner-cell'>
+                                Get Started
+                            </td>
+                        </tr></table>
+                    </td></tr></table>
+                </a>
+                <div class='sep'>
+                    <span>OR</span>
+                </div>
+                <div class='twobuttons clearfix'>
+                    <a href='#main_content' class='button' ng-click="ChangeLocation('#main_content');" onclick="showHeader(); showCatalogFooter();">
+                        <table class='outer-table'><tr><td class='outer-cell'>
+                            <table class='inner-table'><tr>
+                                <td class='inner-cell'>
+                                    <img src='images/landing_pages/icons/view-catalogue.png'>
+                                </td>
+                                <td class='inner-cell'>
+                                    View <br>Catalogue
+                                </td>
+                            </tr></table>
+                        </td></tr></table>
+                    </a>
+                    <a href='#samples_landing' class='button' ng-click="ChangeLocation('#samples_landing');" onclick="showHeader();">
+                        <table class='outer-table'><tr><td class='outer-cell'>
+                            <table class='inner-table'><tr>
+                                <td class='inner-cell'>
+                                    <img src='images/landing_pages/icons/view-samples.png'>
+                                </td>
+                                <td class='inner-cell'>
+                                    View <br>Samples
+                                </td>
+                            </tr></table>
+                        </td></tr></table>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end: Catalog or Samples Selection -->
+    <!-- start: Main Content -->
+    <div data-role="page" id="main_content" data-url="main_content" tabindex="2">
+        <div class="ui-panel-wrapper">
+            <div class="slider">
+
+
+
+                <div ng-repeat="AboutUsPage in AboutUsPages" pagetitle="{{AboutUsPage.PageClass}}">
+                    <!-- start: About Us Page 1 -->
+                    <div ng-if="AboutUsPage.StyleName=='style1' && CurrentState == 3" class="content_item background about_us top right" ng-style="{'background-image':'url({{GetImageByID(AboutUsPage.PageBGImageID)}})'}">
+                        <div class="hover_description">
+                            <h1 ng-bind-html="AboutUsPage.SectionTitle | to_trusted"></h1>
+                            <h2 ng-bind-html="AboutUsPage.PageTitle | to_trusted"></h2>
+                            <p ng-bind-html="AboutUsPage.PageContent | to_trusted"></p>
+                        </div>
+                    </div>
+                    <!-- end: About Us Page 1 -->
+                    <!-- start: About Us Page 2 -->
+                    <div ng-if="AboutUsPage.StyleName=='style2' && CurrentState == 3" class="content_item background about_us bottom left">
+                        <div class="hover_description">
+                            <h1 ng-bind-html="AboutUsPage.SectionTitle | to_trusted"></h1>
+                            <h2 ng-bind-html="AboutUsPage.PageTitle | to_trusted"></h2>
+                        </div>
+                        <div class="diy_image">
+                            <img ng-if="CurrentState == 3" ng-src="{{GetImageByID(AboutUsPage.PageBGImageID)}}" width="1864" height="720">
+                        </div>
+                        <div class="diy_heading">
+                            <h1 ng-bind-html="AboutUsPage.Title1 | to_trusted"></h1>
+                            <h2 ng-bind-html="AboutUsPage.Subtitle1 | to_trusted"></h2>
+                        </div>
+                        <div class="diy_list">
+                            <div class="third_width" ng-bind-html="AboutUsPage.Content1 | to_trusted">
+                            </div>
+                            <div class="third_width" ng-bind-html="AboutUsPage.Content2 | to_trusted">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end: About Us Page 2 -->
+                    <!-- start: About Us Page 3 -->
+                    <div ng-if="AboutUsPage.StyleName=='style3' && CurrentState == 3" class="content_item background about_us top left" ng-style="{'background-image':'url({{GetImageByID(AboutUsPage.PageBGImageID)}})'}">
+                        <div class="hover_description">
+                            <h1 ng-bind-html="AboutUsPage.SectionTitle | to_trusted"></h1>
+                            <h2 ng-bind-html="AboutUsPage.PageTitle | to_trusted"></h2>
+                            <p ng-bind-html="AboutUsPage.PageContent | to_trusted"></p>
+                        </div>
+                    </div>
+                    <!-- end: About Us Page 3 -->
+                    <!-- start: About Us Page 4 -->
+                    <div ng-if="AboutUsPage.StyleName=='style4' && CurrentState == 3" class="content_item background about_us top left">
+                        <div class="hover_description">
+                            <h1 ng-bind-html="AboutUsPage.SectionTitle | to_trusted"></h1>
+                            <h2 ng-bind-html="AboutUsPage.PageTitle | to_trusted"></h2>
+                        </div>
+                        <div class="steps">
+                            <!-- start: Column 1 -->
+                            <div class="quarter_width">
+                                <div class="image">
+                                    <img ng-if="CurrentState == 3" ng-src="{{GetImageByID(AboutUsPage.BGImageID1)}}">
+                                </div>
+                                <p ng-bind-html="AboutUsPage.Subtitle1 | to_trusted"></p>
+                                <h2 ng-bind-html="AboutUsPage.Title1 | to_trusted"></h2>
+                                <p ng-bind-html="AboutUsPage.Content1 | to_trusted"></p>
+                            </div>
+                            <!-- end: Column 1 -->
+                            <!-- start: Column 2 -->
+                            <div class="quarter_width">
+                                <div class="image">
+                                    <img ng-if="CurrentState == 3" ng-src="{{GetImageByID(AboutUsPage.BGImageID2)}}">
+                                </div>
+                                <p ng-bind-html="AboutUsPage.Subtitle2 | to_trusted"></p>
+                                <h2 ng-bind-html="AboutUsPage.Title2 | to_trusted"></h2>
+                                <p ng-bind-html="AboutUsPage.Content2 | to_trusted"></p>
+                            </div>
+                            <!-- end: Column 2 -->
+                            <!-- start: Column 3 -->
+                            <div class="quarter_width">
+                                <div class="image">
+                                    <img ng-if="CurrentState == 3" ng-src="{{GetImageByID(AboutUsPage.BGImageID3)}}">
+                                </div>
+                                <p ng-bind-html="AboutUsPage.Subtitle3 | to_trusted"></p>
+                                <h2 ng-bind-html="AboutUsPage.Title3 | to_trusted"></h2>
+                                <p ng-bind-html="AboutUsPage.Content3 | to_trusted"></p>
+                            </div>
+                            <!-- end: Column 3 -->
+                            <!-- start: Column 4 -->
+                            <div class="quarter_width">
+                                <div class="image">
+                                    <img ng-if="CurrentState == 3" ng-src="{{GetImageByID(AboutUsPage.BGImageID4)}}">
+                                </div>
+                                <p ng-bind-html="AboutUsPage.Subtitle4 | to_trusted"></p>
+                                <h2 ng-bind-html="AboutUsPage.Title4 | to_trusted"></h2>
+                                <p ng-bind-html="AboutUsPage.Content4 | to_trusted"></p>
+                            </div>
+                            <!-- end: Column 4 -->
+                        </div>
+                    </div>
+                    <!-- end: About Us Page 4 -->
+
+
+
+                </div>
+
+                <div ng-repeat="PageSlide in PageSlides" pagetitle="{{PageSlide.PageClass}}">
+
+                    <!-- start: Great Lakes -->
+                    <div class="content_item catalog background about_us top left" ng-if="PageSlide.PageType==4 && CurrentState == 3" ng-style="{'background-image':'url({{GetImageByID(PageSlide.PageBGImageID)}})'}">
+                        <!-- start: Catalog List Page OUTER Wrapper -->
+                        <div class="catalog_list_outer_wrapper">
+                            <!-- start: Hover Description -->
+                            <div class="hover_description">
+                                <h1 ng-bind-html="PageSlide.SectionTitle | to_trusted"></h1>
+                                <h2 ng-bind-html="PageSlide.PageTitle | to_trusted"></h2>
+                            </div>
+                            <!-- start: Hover Description -->
+                            <!-- start: Catalog List Page INNER Wrapper -->
+                            <div class="catalog_list_inner_wrapper">
+                                <p ng-bind-html="PageSlide.PageContent | to_trusted"></p>
+                                <!-- start: Catalog Category Item -->
+                                <div ng-repeat="Gallery in PageSlide.Galleries" class="catalog_category_item">
+                                    <img ng-if="CurrentState == 3" ng-src="{{GetDefaultGalleryImage(Gallery,1)}}">
+                                    <div class="catalog_category_item_header">
+                                        <h3 ng-bind-html="Gallery.Title | to_trusted"></h3>
+                                        <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(PageSlide,Gallery)">
+                                            <img src="./images/catalog/add_to_favourites.png" ng-if="Gallery.isFavorite == false" />
+                                            <img src="./images/catalog/remove_from_favourites.png" ng-if="Gallery.isFavorite == true" />
+                                        </a>
+                                    </div>
+                                    <a href="#" class="lightbox" ng-click="OpenLightbox(PageSlide,Gallery)">
+                                        <img src="./images/catalog/lightbox.png">
+                                    </a>
+                                </div>
+                                <!-- end: Catalog Category Item -->
+                            </div>
+                            <!-- start: Catalog List Page INNER Wrapper -->
+                        </div>
+                        <!-- end: Catalog List Page OUTER Wrapper -->
+                    </div>
+                    <!-- end: Great Lakes -->
+                    <!-- start: Inspiration Page 1 -->
+                    <div ng-if="PageSlide.PageType==3 && PageSlide.StyleName=='i_style1' && CurrentState == 3" class="content_item background about_us top left" ng-style="{'background-image':'url({{GetImageByID(PageSlide.BGImageID)}})'}">
+                        <div class="hover_description">
+                            <h1 ng-bind-html="PageSlide.SectionTitle | to_trusted"></h1>
+                            <h2 ng-bind-html="PageSlide.PageTitle | to_trusted"></h2>
+                        </div>
+                        <div class="inspiration_content full">
+                            <div class="inspiration_item">
+                                <img ng-if="CurrentState == 3" ng-src="{{GetDefaultGalleryImage(PageSlide.Galleries[0],0)}}">
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(PageSlide,PageSlide.Galleries[0])">
+                                    <img src="./images/catalog/add_to_favourites.png" ng-if="PageSlide.Galleries[0].isFavorite == false" />
+                                    <img src="./images/catalog/remove_from_favourites.png" ng-if="PageSlide.Galleries[0].isFavorite == true" />
+                                </a>
+                                <a href="#" class="lightbox" ng-click="OpenLightbox(PageSlide,PageSlide.Galleries[0])"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end: Inspiration Page 1 -->
+                    <!-- start: Inspiration Page 2 -->
+                    <div ng-if="PageSlide.PageType==3 && PageSlide.StyleName=='i_style2' && CurrentState == 3" class="content_item background about_us top left" ng-style="{'background-image':'url({{GetImageByID(PageSlide.BGImageID)}})'}">
+                        <div class="hover_description">
+                            <h1 ng-bind-html="PageSlide.SectionTitle | to_trusted"></h1>
+                            <h2 ng-bind-html="PageSlide.PageTitle | to_trusted"></h2>
+                        </div>
+                        <div class="inspiration_content quarters">
+                            <!-- start: Inspiration Item 1 -->
+                            <div class="inspiration_item">
+                                <img ng-if="CurrentState == 3" ng-src="{{GetDefaultGalleryImage(PageSlide.Galleries[0],3)}}">
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(PageSlide,PageSlide.Galleries[0])">
+                                    <img src="./images/catalog/add_to_favourites.png" ng-if="PageSlide.Galleries[0].isFavorite == false" />
+                                    <img src="./images/catalog/remove_from_favourites.png" ng-if="PageSlide.Galleries[0].isFavorite == true" />
+                                </a>
+                                <a href="#" class="lightbox" ng-click="OpenLightbox(PageSlide,PageSlide.Galleries[0])"></a>
+                            </div>
+                            <!-- end: Inspiration Item 1 -->
+                            <!-- start: Inspiration Item 2 -->
+                            <div class="inspiration_item">
+                                <img ng-if="CurrentState == 3" ng-src="{{GetDefaultGalleryImage(PageSlide.Galleries[1],3)}}">
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(PageSlide,PageSlide.Galleries[1])">
+                                    <img src="./images/catalog/add_to_favourites.png" ng-if="PageSlide.Galleries[1].isFavorite == false" />
+                                    <img src="./images/catalog/remove_from_favourites.png" ng-if="PageSlide.Galleries[1].isFavorite == true" />
+                                </a>
+                                <a href="#" class="lightbox" ng-click="OpenLightbox(PageSlide,PageSlide.Galleries[1])"></a>
+                            </div>
+                            <!-- end: Inspiration Item 2 -->
+                            <!-- start: Inspiration Item 3 -->
+                            <div class="inspiration_item">
+                                <img ng-if="CurrentState == 3" ng-src="{{GetDefaultGalleryImage(PageSlide.Galleries[2],3)}}">
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(PageSlide,PageSlide.Galleries[2])">
+                                    <img src="./images/catalog/add_to_favourites.png" ng-if="PageSlide.Galleries[2].isFavorite == false" />
+                                    <img src="./images/catalog/remove_from_favourites.png" ng-if="PageSlide.Galleries[2].isFavorite == true" />
+                                </a>
+                                <a href="#" class="lightbox" ng-click="OpenLightbox(PageSlide,PageSlide.Galleries[2])"></a>
+                            </div>
+                            <!-- end: Inspiration Item 3 -->
+                            <!-- start: Inspiration Item 4 -->
+                            <div class="inspiration_item">
+                                <img ng-if="CurrentState == 3" ng-src="{{GetDefaultGalleryImage(PageSlide.Galleries[3],3)}}">
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(PageSlide,PageSlide.Galleries[3])">
+                                    <img src="./images/catalog/add_to_favourites.png" ng-if="PageSlide.Galleries[3].isFavorite == false" />
+                                    <img src="./images/catalog/remove_from_favourites.png" ng-if="PageSlide.Galleries[3].isFavorite == true" />
+                                </a>
+                                <a href="#" class="lightbox" ng-click="OpenLightbox(PageSlide,PageSlide.Galleries[3])"></a>
+                            </div>
+                            <!-- end: Inspiration Item 4 -->
+                        </div>
+                    </div>
+                    <!-- end: Inspiration Page 2 -->
+                    <!-- start: Inspiration Page 3 -->
+                    <div ng-if="PageSlide.PageType==3 && PageSlide.StyleName=='i_style3' && CurrentState == 3" class="content_item background about_us top left" ng-style="{'background-image':'url({{GetImageByID(PageSlide.BGImageID)}})'}">
+                        <div class="hover_description">
+                            <h1 ng-bind-html="PageSlide.SectionTitle | to_trusted"></h1>
+                            <h2 ng-bind-html="PageSlide.PageTitle | to_trusted"></h2>
+                        </div>
+                        <div class="inspiration_content thirds">
+                            <!-- start: Inspiration Item 1 -->
+                            <div class="inspiration_item">
+                                <img ng-if="CurrentState == 3" ng-src="{{GetDefaultGalleryImage(PageSlide.Galleries[0],5)}}">
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(PageSlide,PageSlide.Galleries[0])">
+                                    <img src="./images/catalog/add_to_favourites.png" ng-if="PageSlide.Galleries[0].isFavorite == false" />
+                                    <img src="./images/catalog/remove_from_favourites.png" ng-if="PageSlide.Galleries[0].isFavorite == true" />
+                                </a>
+                                <a href="#" class="lightbox" ng-click="OpenLightbox(PageSlide,PageSlide.Galleries[0])"></a>
+                            </div>
+                            <!-- end: Inspiration Item 1 -->
+                            <!-- start: Inspiration Item 2 -->
+                            <div class="inspiration_item">
+                                <img ng-if="CurrentState == 3" ng-src="{{GetDefaultGalleryImage(PageSlide.Galleries[1],4)}}">
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(PageSlide,PageSlide.Galleries[1])">
+                                    <img src="./images/catalog/add_to_favourites.png" ng-if="PageSlide.Galleries[1].isFavorite == false" />
+                                    <img src="./images/catalog/remove_from_favourites.png" ng-if="PageSlide.Galleries[1].isFavorite == true" />
+                                </a>
+                                <a href="#" class="lightbox" ng-click="OpenLightbox(PageSlide,PageSlide.Galleries[1])"></a>
+                            </div>
+                            <!-- end: Inspiration Item 2 -->
+                            <!-- start: Inspiration Item 3 -->
+                            <div class="inspiration_item">
+                                <img ng-if="CurrentState == 3" ng-src="{{GetDefaultGalleryImage(PageSlide.Galleries[2],4)}}">
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(PageSlide,PageSlide.Galleries[2])">
+                                    <img src="./images/catalog/add_to_favourites.png" ng-if="PageSlide.Galleries[2].isFavorite == false" />
+                                    <img src="./images/catalog/remove_from_favourites.png" ng-if="PageSlide.Galleries[2].isFavorite == true" />
+                                </a>
+                                <a href="#" class="lightbox" ng-click="OpenLightbox(PageSlide,PageSlide.Galleries[2])"></a>
+                            </div>
+                            <!-- end: Inspiration Item 3 -->
+                        </div>
+                    </div>
+                    <!-- end: Inspiration Page 3 -->
+                </div>
+
+
+                <div ng-repeat="inspirations in InspirationPage" pagetitle="{{inspirations.PageClass}}">
+
+                    <!-- start: Inspiration Page 1 -->
+                    <div ng-if="inspirations.StyleName=='i_style1' && CurrentState == 3" class="content_item background about_us top left" ng-style="{'background-image':'url({{GetImageByID(inspirations.BGImageID)}})'}">
+                        <div class="hover_description">
+                            <h1 ng-bind-html="inspirations.SectionTitle | to_trusted"></h1>
+                            <h2 ng-bind-html="inspirations.PageTitle | to_trusted"></h2>
+                        </div>
+                        <div class="inspiration_content full">
+                            <div class="inspiration_item">
+                                <img ng-if="CurrentState == 3" ng-src="{{GetDefaultGalleryImage(inspirations.Galleries[0],0)}}">
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(inspirations,inspirations.Galleries[0])">
+                                    <img src="./images/catalog/add_to_favourites.png" ng-if="inspirations.Galleries[0].isFavorite == false" />
+                                    <img src="./images/catalog/remove_from_favourites.png" ng-if="inspirations.Galleries[0].isFavorite == true" />
+                                </a>
+                                <a href="#" class="lightbox" ng-click="OpenLightbox(inspirations,inspirations.Galleries[0])"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end: Inspiration Page 1 -->
+                    <!-- start: Inspiration Page 2 -->
+                    <div ng-if="inspirations.StyleName=='i_style2' && CurrentState == 3" class="content_item background about_us top left" ng-style="{'background-image':'url({{GetImageByID(inspirations.BGImageID)}})'}">
+                        <div class="hover_description">
+                            <h1 ng-bind-html="inspirations.SectionTitle | to_trusted"></h1>
+                            <h2 ng-bind-html="inspirations.PageTitle | to_trusted"></h2>
+                        </div>
+                        <div class="inspiration_content quarters">
+                            <!-- start: Inspiration Item 1 -->
+                            <div class="inspiration_item">
+                                <img ng-if="CurrentState == 3" ng-src="{{GetDefaultGalleryImage(inspirations.Galleries[0],3)}}">
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(inspirations,inspirations.Galleries[0])">
+                                    <img src="./images/catalog/add_to_favourites.png" ng-if="inspirations.Galleries[0].isFavorite == false" />
+                                    <img src="./images/catalog/remove_from_favourites.png" ng-if="inspirations.Galleries[0].isFavorite == true" />
+                                </a>
+                                <a href="#" class="lightbox" ng-click="OpenLightbox(inspirations,inspirations.Galleries[0])"></a>
+                            </div>
+                            <!-- end: Inspiration Item 1 -->
+                            <!-- start: Inspiration Item 2 -->
+                            <div class="inspiration_item">
+                                <img ng-if="CurrentState == 3" ng-src="{{GetDefaultGalleryImage(inspirations.Galleries[1],3)}}">
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(inspirations,inspirations.Galleries[1])">
+                                    <img src="./images/catalog/add_to_favourites.png" ng-if="inspirations.Galleries[1].isFavorite == false" />
+                                    <img src="./images/catalog/remove_from_favourites.png" ng-if="inspirations.Galleries[1].isFavorite == true" />
+                                </a>
+                                <a href="#" class="lightbox" ng-click="OpenLightbox(inspirations,inspirations.Galleries[1])"></a>
+                            </div>
+                            <!-- end: Inspiration Item 2 -->
+                            <!-- start: Inspiration Item 3 -->
+                            <div class="inspiration_item">
+                                <img ng-if="CurrentState == 3" ng-src="{{GetDefaultGalleryImage(inspirations.Galleries[2],3)}}">
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(inspirations,inspirations.Galleries[2])">
+                                    <img src="./images/catalog/add_to_favourites.png" ng-if="inspirations.Galleries[2].isFavorite == false" />
+                                    <img src="./images/catalog/remove_from_favourites.png" ng-if="inspirations.Galleries[2].isFavorite == true" />
+                                </a>
+                                <a href="#" class="lightbox" ng-click="OpenLightbox(inspirations,inspirations.Galleries[2])"></a>
+                            </div>
+                            <!-- end: Inspiration Item 3 -->
+                            <!-- start: Inspiration Item 4 -->
+                            <div class="inspiration_item">
+                                <img ng-if="CurrentState == 3" ng-src="{{GetDefaultGalleryImage(inspirations.Galleries[3],3)}}">
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(inspirations,inspirations.Galleries[3])">
+                                    <img src="./images/catalog/add_to_favourites.png" ng-if="inspirations.Galleries[3].isFavorite == false" />
+                                    <img src="./images/catalog/remove_from_favourites.png" ng-if="inspirations.Galleries[3].isFavorite == true" />
+                                </a>
+                                <a href="#" class="lightbox" ng-click="OpenLightbox(inspirations,inspirations.Galleries[3])"></a>
+                            </div>
+                            <!-- end: Inspiration Item 4 -->
+                        </div>
+                    </div>
+                    <!-- end: Inspiration Page 2 -->
+                    <!-- start: Inspiration Page 3 -->
+                    <div ng-if="inspirations.StyleName=='i_style3' && CurrentState == 3" class="content_item background about_us top left" ng-style="{'background-image':'url({{GetImageByID(inspirations.BGImageID)}})'}">
+                        <div class="hover_description">
+                            <h1 ng-bind-html="inspirations.SectionTitle | to_trusted"></h1>
+                            <h2 ng-bind-html="inspirations.PageTitle | to_trusted"></h2>
+                        </div>
+                        <div class="inspiration_content thirds">
+                            <!-- start: Inspiration Item 1 -->
+                            <div class="inspiration_item">
+                                <img ng-if="CurrentState == 3" ng-src="{{GetDefaultGalleryImage(inspirations.Galleries[0],5)}}">
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(inspirations,inspirations.Galleries[0])">
+                                    <img src="./images/catalog/add_to_favourites.png" ng-if="inspirations.Galleries[0].isFavorite == false" />
+                                    <img src="./images/catalog/remove_from_favourites.png" ng-if="inspirations.Galleries[0].isFavorite == true" />
+                                </a>
+                                <a href="#" class="lightbox" ng-click="OpenLightbox(inspirations,inspirations.Galleries[0])"></a>
+                            </div>
+                            <!-- end: Inspiration Item 1 -->
+                            <!-- start: Inspiration Item 2 -->
+                            <div class="inspiration_item">
+                                <img ng-if="CurrentState == 3" ng-src="{{GetDefaultGalleryImage(inspirations.Galleries[1],4)}}">
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(inspirations,inspirations.Galleries[1])">
+                                    <img src="./images/catalog/add_to_favourites.png" ng-if="inspirations.Galleries[1].isFavorite == false" />
+                                    <img src="./images/catalog/remove_from_favourites.png" ng-if="inspirations.Galleries[1].isFavorite == true" />
+                                </a>
+                                <a href="#" class="lightbox" ng-click="OpenLightbox(inspirations,inspirations.Galleries[1])"></a>
+                            </div>
+                            <!-- end: Inspiration Item 2 -->
+                            <!-- start: Inspiration Item 3 -->
+                            <div class="inspiration_item">
+                                <img ng-if="CurrentState == 3" ng-src="{{GetDefaultGalleryImage(inspirations.Galleries[2],4)}}">
+                                <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(inspirations,inspirations.Galleries[2])">
+                                    <img src="./images/catalog/add_to_favourites.png" ng-if="inspirations.Galleries[2].isFavorite == false" />
+                                    <img src="./images/catalog/remove_from_favourites.png" ng-if="inspirations.Galleries[2].isFavorite == true" />
+                                </a>
+                                <a href="#" class="lightbox" ng-click="OpenLightbox(inspirations,inspirations.Galleries[2])"></a>
+                            </div>
+                            <!-- end: Inspiration Item 3 -->
+                        </div>
+                    </div>
+                    <!-- end: Inspiration Page 3 -->
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- end: Main Content -->
+    <!-- start: Samples Landing Page -->
+    <div data-role="page" id="samples_landing" data-url="#samples_landing" tabindex="3">
+        <div class="ui-panel-wrapper">
+            <div class="samples_main_list_item" ng-repeat="choice in StoneSamplesPage">
+                <img ng-if="CurrentState == 4" ng-src="{{GetImageByID(choice.BGImageID1)}}">
+                <a href="#samples" class="samples_link_to_section" ng-click="showSamplesFooter($index); ChangeLocation('#samples')" ng-bind-html="choice.PageTitle | to_trusted"></a>
+            </div>
+            <!--<div class="samples_main_list_item">
+                <img src="./images/samples_landing/2.jpg">
+                <a href="#samples" class="samples_link_to_section" onclick="showSamplesFooter(1);">Dry-Stack</a>
+            </div>
+            <div class="samples_main_list_item last">
+                <img src="./images/samples_landing/1.jpg">
+                <a href="#samples" class="samples_link_to_section" onclick="showSamplesFooter(2);">Phoenix</a>
+            </div>-->
+        </div>
+    </div>
+
+
+    <!-- end: Samples Landing Page -->
+    <!-- start: Samples Pages -->
+
+
+
+    <div data-role="page" id="samples" data-url="#samples" tabindex="4">
+        <div class="ui-panel-wrapper">
+            <div class="slider">
+
+                <div ng-repeat="stones in StoneSamplesPage">
+                    <!-- start: Great Lakes -->
+                    <div ng-if="CurrentState == 5" class="content_item samples background about_us top left" ng-style="{'background-image':'url({{GetImageByID(stones.PageBGImageID)}})'}">
+                        <!-- start: Hover Description -->
+                        <div class="hover_description">
+                            <h1 ng-bind-html="stones.SectionTitle | to_trusted"></h1>
+                            <h2 ng-bind-html="stones.PageTitle | to_trusted"></h2>
+                        </div>
+                        <!-- start: Hover Description -->
+                        <!-- start: Samples List Page Wrapper -->
+                        <div class="samples_list_wrapper">
+                            <!-- start: Samples Category Item -->
+                            <div ng-repeat="Gallery in stones.Galleries" class="samples_category_item">
+                                <img ng-if="CurrentState == 5" ng-src="{{GetDefaultGalleryImage(Gallery,2)}}">
+                                <div class="samples_category_item_header">
+                                    <h3 ng-bind-html="Gallery.Title | to_trusted"></h3>
+                                    <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(stones,Gallery)">
+                                        <img src="./images/catalog/add_to_favourites.png" ng-if="Gallery.isFavorite == false" />
+                                        <img src="./images/catalog/remove_from_favourites.png" ng-if="Gallery.isFavorite == true" />
+                                    </a>
+                                </div>
+                                <a href="#" class="lightbox" ng-click="OpenLightbox(stones,Gallery)">
+                                    <img src="./images/samples/lightbox.png">
+                                </a>
+                            </div>
+                            <!-- end: Samples Category Item -->
+                        </div>
+                        <!-- end: Samples List Page Wrapper -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- end: Samples Pages -->
+    <!-- start: Favourites -->
+    <div data-role="page" id="favorites" data-url="favorites" tabindex="5">
+        <div class="ui-panel-wrapper">
+            <!-- start: Stones Favourites -->
+            <div id="favorites_stones" class="favorites">
+                <h1>{{Strings.Favorites.SectionTitle}}</h1>
+                <h2>{{Strings.Favorites.StonesTitle}}</h2>
+                <div class="favorites_section samples" ng-repeat="StoneSample in SampleFavorites">
+                    <h3 ng-bind-html="StoneSample.Title | to_trusted"></h3>
+                    <!-- start: Catalog Category Item -->
+                    <div class="catalog_category_item" ng-repeat="Gallery in StoneSample.Samples" ng-show="CheckGalleryBeforeShow(Gallery)">
+                        <img ng-if="CurrentState == 6" ng-src="{{GetDefaultGalleryImage(Gallery,1)}}">
+                        <div class="catalog_category_item_header">
+                            <h3 ng-bind-html="Gallery.Title | to_trusted"></h3>
+                            <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(StonePage,Gallery)">
+                                <img src="./images/catalog/add_to_favourites.png" ng-if="Gallery.isFavorite == false" />
+                                <img src="./images/catalog/remove_from_favourites.png" ng-if="Gallery.isFavorite == true" />
+                            </a>
+                        </div>
+                        <a href="#" class="lightbox" ng-click="OpenLightbox(null,Gallery)">
+                            <img src="./images/catalog/lightbox.png">
+                        </a>
+                    </div>
+                    <!-- end: Catalog Category Item -->
+                </div>
+
+            </div>
+            <!-- end: Stones Favourites -->
+            <!-- start: Inspirations Favourites -->
+            <div id="favorites_inspirations" class="favorites">
+                <h1>&nbsp</h1>
+                <h2>{{Strings.Favorites.InspirationsTitle}}</h2>
+                <div class="favorites_section">
+                    <div class="inspiration_listing_item" ng-repeat="Gallery in Favorites | filter:{PageType: '3'}">
+                        <img ng-if="CurrentState == 6" ng-src="{{GetDefaultGalleryImage(Gallery,1)}}">
+                        <a href="#" class="add_to_favourites" ng-click="ToggleFavoritesGallery(null,Gallery)">
+                            <img src="./images/catalog/add_to_favourites.png" ng-if="Gallery.isFavorite == false" />
+                            <img src="./images/catalog/remove_from_favourites.png" ng-if="Gallery.isFavorite == true" />
+                        </a>
+                        <a href="#" class="lightbox" ng-click="OpenLightbox(null,Gallery)">
+                            <img src="./images/catalog/lightbox.png">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- end: Inspirations Favourites -->
+        </div>
+    </div>
+    <!-- end: Favourites -->
+    <!-- start: Where to Purchase -->
+    <div data-role="page" id="purchase" data-url="purchase" tabindex="6">
+        <div class="message_verlay" ng-if="IsOnline == false">
+            <h1>{{Strings.OfflineMsgs.OfflineMsgOverlay}}</h1>
+        </div>
+        <div class="ui-panel-wrapper">
+            <div id="purchase_content">
+                <div id="purchase_top">
+                    <h1>{{Strings.Locator.Title}}</h1>
+                    <p>{{Strings.Locator.Content}}</p>
+                </div>
+				<div id="purchase_form">
+					<form>
+						<input type="text" id="purchase_search" placeholder="{{Strings.Locator.SearchPlaceHolder}}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+						<a href="#" id="purchase_submit" onclick="codeAddress();">
+							<img src="./images/where_to_purchase/search_icon.png">
+						</a>
+					</form>
+				</div>
+				<div id="purchase_map">
+					<!--<img src="./images/where_to_purchase/sample_map.jpg" width="2048" height="977">-->
+				</div>
+            </div>
+        </div>
+    </div>
+    <!-- end: Where to Purchase -->
+    <!-- start: Contact -->
+    <div data-role="page" id="contact" data-url="contact" tabindex="0">
+        <div class="ui-panel-wrapper">
+            <div class="message_verlay" ng-if="IsOnline == false">
+                <h1>{{Strings.OfflineMsgs.OfflineMsgOverlay}}</h1>
+            </div>
+            <div id="contact_content">
+                <div id="contact_left">
+                    <div class="spacer">
+                        <div class="hover_description">
+                            <h1>{{Strings.ContactUs.SectionTitle}}</h1>
+                            <h2 ng-bind-html="Strings.ContactUs.PageTitle | to_trusted">
+                                <!--<span>Want help with your project?</span><br>
+                                CONTACT A STONE GENIUS-->
+                            </h2>
+                        </div>
+                        <p ng-bind-html="Strings.ContactUs.Content | to_trusted">
+                            <!--We can help you make decisions<br>
+                            about stone selection, design,<br>
+                            colour, installation and more.-->
+                        </p>
+                        <form id="nix_contact_form">
+                            <div class="form_row">
+                                <label>{{Strings.ContactUs.FirstName}}</label>
+                                <input type="text" name="firstName" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                            </div>
+                            <div class="form_row">
+                                <label>{{Strings.ContactUs.LastName}}</label>
+                                <input type="text" name="lastName" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                            </div>
+                            <div class="form_row">
+                                <label>{{Strings.ContactUs.Iam}}</label>
+                                <div id="radio">
+                                    <input type="radio" name="profession" value="{{Strings.ContactUs.Contractor}}" required>
+                                    <label>{{Strings.ContactUs.Contractor}}</label>
+                                    <input type="radio" name="profession" value="{{Strings.ContactUs.Homeowner}}" required>
+                                    <label>{{Strings.ContactUs.Homeowner}}</label>
+                                    <input type="radio" name="profession" value="{{Strings.ContactUs.Architect}}" required>
+                                    <label>{{Strings.ContactUs.Architect}}</label>
+                                    <input type="radio" name="profession" value="{{Strings.ContactUs.Designer}}" required>
+                                    <label>{{Strings.ContactUs.Designer}}</label>
+                                </div>
+                            </div>
+                            <div class="form_row">
+                                <label>{{Strings.ContactUs.Email}}</label>
+                                <input type="email" name="email" required autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                            </div>
+                            <div class="form_row">
+                                <label>{{Strings.ContactUs.Phone}}</label>
+                                <input type="text" name="phoneNumber" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                            </div>
+                            <div class="form_row">
+                                <input type="submit" value="Submit" data-role="none" />
+                            </div>
+                        </form>
+                        <div class="contact_msgs hidden">
+                            <p id="contact_success_msg" class="hidden">{{Strings.ContactUs.ContactMsgSuccess}}</p>
+                            <p id="contact_error_msg" class="hidden">{{Strings.ContactUs.ContactMsgError}}</p>
+                            <div class="form_row">
+                                <input onclick="event.preventDefault(); HideContactMsgs();" type="button" value="{{Strings.ContactUs.BackMsg}}" data-role="none" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="contact_right">
+                    <img src="./images/contact/contact_bg.jpg">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end: Contact -->
+    <!-- start: Estimator -->
+    <div data-role="page" id="estimator" data-url="estimator" tabindex="9">
+        <div class="ui-panel-wrapper top left">
+            <div class="hover_description">
+                <h1>{{Strings.Estimator.SectionTitle}}</h1>
+            </div>
+            <div id="estimator_spacer"></div>
+            <!-- start: Estimator Content -->
+            <div id="estimator_content">
+
+                <div id="cal_left" class="esti_box1 estimator_column">
+                    <table cellspacing="0" cellpadding="0" width="100%;">
+                        <thead>
+                            <tr>
+                                <td colspan="6" class="mes red_td">
+                                    <h3>{{Strings.Estimator.Title1}}</h3>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody id="dimension_mur" ng-repeat="Wall in Walls">
+                            <!-- start: Item Row -->
+                            <tr class="measurement_and_item_total table_bg">
+                                <td class="measurement" colspan="2">
+                                    <input value="0" id="dimension_hid_1" name="dimension_hid_1" type="hidden">
+                                    {{Strings.Estimator.Measurements + " " + ($index + 1)}}
+                                </td>
+                                <td class="item_total last_td" colspan="2" align="right">
+                                    <span id="dimension_mur_total_1" ng-bind="Wall.CalculateMeasurement()">0.00</span>
+                                </td>
+                            </tr>
+
+                            <tr class="labels_width_height table_bg">
+                                <td colspan="2">{{Strings.Estimator.Width}}</td>
+                                <td colspan="2" class="last_td">{{Strings.Estimator.Height}}</td>
+                            </tr>
+                            <tr class="labels_size table_bg">
+                                <td>{{Strings.Estimator.Feet}}</td>
+                                <td>{{Strings.Estimator.Inches}}</td>
+                                <td>{{Strings.Estimator.Feet}}</td>
+                                <td class="last_td">{{Strings.Estimator.Inches}}</td>
+                            </tr>
+                            <tr class="table_bg iputs">
+                                <td>
+                                    <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
+                                        <input onkeydown="AllowOnlyNumbers(event)" onclick="SetColor(this)" data-role="none" ng-model="Wall.Length" size="4" value="0" id="dimension_mur_pied_l_1" name="dimension_mur_pied_l_1" style="display: inline;" type="number" min="0" step="1">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
+                                        <input onkeydown="AllowOnlyNumbers(event)" onclick="SetColor(this)" data-role="none" ng-model="Wall.LengthInch" size="4" value="0" id="dimension_mur_pouce_l_1" name="dimension_mur_pouce_l_1" style="display: inline;" type="number" min="0" max="12" step="1">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
+                                        <input onkeydown="AllowOnlyNumbers(event)" onclick="SetColor(this)" data-role="none" ng-model="Wall.Height" size="4" value="0" id="dimension_mur_pied_h_1" name="dimension_mur_pied_h_1" style="display: inline;" type="number" min="0" step="1">
+                                    </div>
+                                </td>
+                                <td class="last_td">
+                                    <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
+                                        <input onkeydown="AllowOnlyNumbers(event)" onclick="SetColor(this)" data-role="none" ng-model="Wall.HeightInch" size="4" value="0" id="dimension_mur_pouce_h_1" name="dimension_mur_pouce_h_1" style="display: inline;" type="number" min="0" max="12" step="1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="spacer" colspan="4" width="100%" height="1">&nbsp;</td>
+                            </tr>
+                            <!-- end: Item Row -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="cal_right" class="esti_box2 estimator_column">
+                    <table cellspacing="0" cellpadding="0" width="100%;">
+                        <thead>
+                            <tr>
+                                <td colspan="6" class="mes red_td">
+                                    <h3>{{Strings.Estimator.Title2}}</h3>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody id="Tbody1" ng-repeat="Wall in Windows">
+                            <!-- start: Item Row -->
+                            <tr class="measurement_and_item_total table_bg">
+                                <td class="measurement" colspan="2">
+                                    <input value="0" id="Hidden1" name="dimension_hid_1" type="hidden">
+                                    {{Strings.Estimator.Window + " " + ($index + 1)}}
+                                </td>
+                                <td class="item_total last_td" colspan="2" align="right">
+                                    <span id="Span1" ng-bind="Wall.CalculateMeasurement()">0.00</span>
+                                </td>
+                            </tr>
+
+                            <tr class="labels_width_height table_bg">
+                                <td colspan="2">{{Strings.Estimator.Width}}</td>
+                                <td colspan="2" class="last_td">{{Strings.Estimator.Height}}</td>
+                            </tr>
+                            <tr class="labels_size table_bg">
+                                <td>{{Strings.Estimator.Feet}}</td>
+                                <td>{{Strings.Estimator.Inches}}</td>
+                                <td>{{Strings.Estimator.Feet}}</td>
+                                <td class="last_td">{{Strings.Estimator.Inches}}</td>
+                            </tr>
+                            <tr class="table_bg iputs">
+                                <td>
+                                    <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
+                                        <input onkeydown="AllowOnlyNumbers(event)" onclick="SetColor(this)" data-role="none" ng-model="Wall.Length" size="4" value="0" id="Number1" name="dimension_mur_pied_l_1" style="display: inline;" type="number" min="0" step="1">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
+                                        <input onkeydown="AllowOnlyNumbers(event)" onclick="SetColor(this)" data-role="none" ng-model="Wall.LengthInch" size="4" value="0" id="Number2" name="dimension_mur_pouce_l_1" style="display: inline;" type="number" min="0" max="12" step="1">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
+                                        <input onkeydown="AllowOnlyNumbers(event)" onclick="SetColor(this)" data-role="none" ng-model="Wall.Height" size="4" value="0" id="Number3" name="dimension_mur_pied_h_1" style="display: inline;" type="number" min="0" step="1">
+                                    </div>
+                                </td>
+                                <td class="last_td">
+                                    <div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset">
+                                        <input onkeydown="AllowOnlyNumbers(event)" onclick="SetColor(this)" data-role="none" ng-model="Wall.HeightInch" size="4" value="0" id="Number4" name="dimension_mur_pouce_h_1" style="display: inline;" type="number" min="0" max="12" step="1">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="spacer" colspan="4" width="100%" height="1">&nbsp;</td>
+                            </tr>
+                            <!-- end: Item Row -->
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div id="cal_right2" class="esti_box3 estimator_column">
+                    <table cellspacing="0" cellpadding="0" width="100%;">
+                        <thead>
+                            <tr>
+                                <td colspan="6" class="mes yellow_border red_td">
+                                    <h3>{{Strings.Estimator.Title3}}</h3>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="spacer" colspan="2" width="100%" height="1">&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td class="red_td" ng-bind-html="Strings.Estimator.TotalSquare | to_trusted"><!--TOTAL SQUARE<br>FOOTAGE REQUIRED--></td>
+                                <td class="yellow_border"><span id="gros_total" ng-bind="TotalSquereFootageReq()">0.00</span></td>
+                            </tr>
+                            <tr>
+                                <td class="spacer" colspan="2" width="100%" height="1">&nbsp;</td>
+                            </tr>
+                        </thead>
+
+                        <tr style="display:none;">
+                            <td><input id="sous_total_dimension_mur" name="sous_total_mur" value="0" type="hidden"> <input id="sous_total_pignon" name="sous_total_mur" value="0" type="hidden"> <input id="sous_total_porte" name="sous_total_mur" value="0" type="hidden"> <input id="sous_total_fenetre" name="sous_total_mur" value="0" type="hidden"> </td>
+                            <td style="border-top: 1pt solid rgb(0, 0, 0);"></td>
+                        </tr>
+                        <tr>
+                            <td class="red_td" ng-bind-html="Strings.Estimator.TotalLinear | to_trusted"><!--<span>TOTAL LINEAR FOOTAGE<br>REQUIRED FOR CORNERS</span>--></td>
+                            <td class="yellow_border"><span id="gros_total_m" ng-bind="TotalLinearFootageReq()">0.00</span></td>
+                        </tr>
+                        <tr>
+                            <td class="spacer" colspan="2" width="100%" height="1">&nbsp;</td>
+                        </tr>
+                        <!-- start: Starter Strips Required -->
+                        <tr>
+                            <td class="red_td" ng-bind-html="Strings.Estimator.StarterStrips | to_trusted"><!--<span>STARTER STRIPS<br>REQUIRED</span>--></td>
+                            <td class="yellow_border"><span id="gros_total_starter" ng-bind="StarterStripsReq()">0.00</span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <!-- end: Estimator Content -->
+        </div>
+    </div>
+    <!-- end: Estimator -->
+    <!-- start: elevate -->
+    <div data-role="page" id="elevate" data-url="elevate" tabindex="12">
+        <div class='main-screen'>
+            <div class='title-container'>
+                <img class='main-title-image' src='visualizer/img/main-title.png'>
+                <div class='subtitle'>Transform the exterior or interior <br>of your home with a click of the mouse</div>
+            </div>
+            <div class='buttons clearfix'>
+                <a id='btn-sample-projects' href='#' class='button'>
+                    <div class='icon'>
+                        <img src='visualizer/img/icon-edit.png'>
+                    </div>
+                    <div class='text'>
+                        <span class='btitle'>
+                            <span class='extralight'>Design with</span><br> 
+                            <span class='semibold'>sample projects</span>
+                        </span>
+                        <span class='bcontent'>
+                            See how easy it can be to redesign an home interior, exterior or fireplace.
+                        </span>
+                    </div>
+                </a>
+                <a id='btn-own-photo' href='#'class='button'>
+                    <div class='icon'>
+                        <img src='visualizer/img/icon-upload.png'>
+                    </div>
+                    <div class='text'>
+                        <span class='btitle'>
+                            <span class='extralight'>Upload</span><br> 
+                            <span class='semibold'>my own photo</span>
+                        </span>
+                        <span class='bcontent'>
+                            Start by choosing a style of stone then pickup the colour and experience the transformation.
+                        </span>
+                    </div>
+                </a>
+                <a id='btn-load-project' href='#' class='button'>
+                    <div class='icon'>
+                        <img src='visualizer/img/icon-pencil.png'>
+                    </div>
+                    <div class='text'>
+                        <span class='btitle'>
+                            <span class='extralight'>Open</span><br> 
+                            <span class='semibold'>a saved project</span>
+                        </span>
+                        <span class='bcontent'>
+                            View, share or modify your design.
+                        </span>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class='left-nav'>
+            <a id='load-template' href='#' class='btn load-template'>
+                <img src='visualizer/img/sidebar-load.png'>
+                <span class='caption'>
+                    Load Saved Project
+                </span>
+            </a>
+            <a id='select-house' href='#' class='btn select-house'>
+                <img src='visualizer/img/sidebar-house.png'>
+                <span class='caption'>
+                    Select House
+                </span>
+            </a>
+            <a id='upload-photo-sidemenu' href='#' class='btn upload-photo'>
+                <img src='visualizer/img/sidebar-load.png'>
+                <span class='caption'>
+                    Upload Photo
+                </span>
+            </a>
+            <a id='save-template' href='#' class='btn save-template'>
+                <img src='visualizer/img/sidebar-save.png'>
+                <span class='caption'>
+                    Save Project
+                </span>
+            </a>
+            <a id='export-button' href='#' class='btn share'>
+                <img src='visualizer/img/sidebar-share.png'>
+                <span class='caption'>
+                    Share
+                </span>
+            </a>
+            <a id='delete-button' href='#' class='btn wall-types hidden'>
+                <img src='visualizer/img/sidebar-walls.png'>
+                <span class='caption'>
+                    Remove Area
+                </span>
+            </a>
+            <a id='undo-button' href='#' class='btn wall-types hidden'>
+                <img src='visualizer/img/sidebar-walls.png'>
+                <span class='caption'>
+                    Undo Last Point
+                </span>
+            </a>
+            <a id='cancel-button' href='#' class='btn wall-types hidden'>
+                <img src='visualizer/img/sidebar-walls.png'>
+                <span class='caption'>
+                    Cancel Drawing
+                </span>
+            </a>
+        </div>
+        <!-- Prebuilt templates -->
+        <div class='container templates house-templates elevate-page' data-page='prebuilt-templates'>
+            <h2 class='select-title'>Select House Image</h2>
+            <div class='btns clearfix'>
+                <a href='#' class='btn exterior active'>Exterior</a>
+                <a href='#' class='btn interior'>Interior</a>
+                <!--<a href='#' class='btn goback'>Go back</a>-->
+            </div>
+            <div class='blocks houses clearfix'>
+                <div class='exterior'>
+                    <div class="block" style="background-image: url('./visualizer/img/exterior/04.jpg')">
+                        <a class='house' href='#' data-template-id="9">
+                           <img class='hidden' src='./visualizer/img/exterior/04.jpg'>
+                        </a>
+                    </div>
+                    <div class="block" style="background-image: url('./visualizer/img/exterior/05.jpg')">
+                        <a class='house' href='#' data-template-id="10">
+                           <img class='hidden' src='./visualizer/img/exterior/05.jpg'>
+                        </a>
+                    </div>
+                    <div class="block" style="background-image: url('./visualizer/img/exterior/06.jpg')">
+                        <a class='house' href='#' data-template-id="11">
+                           <img class='hidden' src='./visualizer/img/exterior/06.jpg'>
+                        </a>
+                    </div>
+                    <div class="block" style="background-image: url('./visualizer/img/exterior/07.jpg')">
+                        <a class='house' href='#' data-template-id="12">
+                           <img class='hidden' src='./visualizer/img/exterior/07.jpg'>
+                        </a>
+                    </div>
+                    <div class="block" style="background-image: url('./visualizer/img/exterior/08.jpg')">
+                        <a class='house' href='#' data-template-id="13">
+                           <img class='hidden' src='./visualizer/img/exterior/08.jpg'>
+                        </a>
+                    </div>
+                    <div class="block" style="background-image: url('./visualizer/img/exterior/09.jpg')">
+                        <a class='house' href='#' data-template-id="14">
+                           <img class='hidden' src='./visualizer/img/exterior/09.jpg'>
+                        </a>
+                    </div>
+                </div>
+                <div class='interior hidden'>
+                    <div class="block" style="background-image: url('./visualizer/img/interior/01.jpg')">
+                        <a class='house' href='#' data-template-id="4">
+                           <img class='hidden' src='./visualizer/img/interior/01.jpg'>
+                        </a>
+                    </div>
+                    <div class="block" style="background-image: url('./visualizer/img/interior/02.jpg')">
+                        <a class='house' href='#' data-template-id="5">
+                           <img class='hidden' src='./visualizer/img/interior/02.jpg'>
+                        </a>
+                    </div>
+                    <div class="block" style="background-image: url('./visualizer/img/interior/03.jpg')">
+                        <a class='house' href='#' data-template-id="6">
+                           <img class='hidden' src='./visualizer/img/interior/03.jpg'>
+                        </a>
+                    </div>
+                    <div class="block" style="background-image: url('./visualizer/img/interior/04.jpg')">
+                        <a class='house' href='#' data-template-id="7">
+                           <img class='hidden' src='./visualizer/img/interior/04.jpg'>
+                        </a>
+                    </div>
+                    <div class="block" style="background-image: url('./visualizer/img/interior/05.jpg')">
+                        <a class='house' href='#' data-template-id="8">
+                           <img class='hidden' src='./visualizer/img/interior/05.jpg'>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Saved templates -->
+        <div class='container templates saved-templates closed elevate-page' data-page='saved-templates'>
+            <h2 class='select-title'>Load Saved Project</h2>
+            <div class='blocks clearfix'>
+            </div>
+        </div>
+        <!-- Drawing areas on house -->
+        <div class='container drawing-page closed elevate-page' data-page='drawing-area'>
+            <div id='loader' class='loader-bg hidden'>
+                <div class='loader-modal'></div>
+            </div>
+            <div id='save-template-dialog' class='loader-bg hidden'>
+                <div class='loader-modal'>
+                    <div class='close'></div>
+                    <input class='inputfield' type='text' id='template-name' placeholder='Enter template name' />
+                    <a class='vsbtn' href='#' onclick='saveTemplate()'>Save Project</a>
+                    <a class='vsbtn' href='#' onclick='cancelSave()'>Cancel</a>
+                </div>
+            </div>
+            <div id='measure-dialog' class='loader-bg hidden'>
+                <div class='loader-modal'>
+                    Enter length of the line (in ft)
+                    <input class='inputfield' type='number' id='ft-measure'>
+                    <a class='vsbtn' href='#' id='continue-button'>Continue</a>
+                    <a class='vsbtn' href='#' id='try-again-button'>Try Again</a>
+                </div>
+            </div>
+            <div class='drawing-area'>
+                <div class='measuring-notice notice tutorial' id='tutorial0'>
+                    Please measure how large the subject of the picture is in real life.<br>
+                    Touch on a corner of a wall or door on the project to start drawing a measuring line, and touch again to make measure line.
+                    <div class='buttons'>
+                        <a class='button close' href='#'>Close</a>
+                    </div>
+                </div>
+                <div class='notice tutorial' id='tutorial1'>
+                    Touch the picture where you want to begin your drawing. Then touch the screen for the second point of the drawing and repeat until you are done.
+                    <div class='buttons'>
+                        <a class='button skip' href='#'>Hide</a>&nbsp;
+                        <a class='button close' href='#'>Next</a>
+                    </div>
+                </div>
+                <div class='notice tutorial' id='tutorial2'>
+                    When finished click the Yellow circle to complete your drawing.
+                    <div class='buttons'>
+                        <a class='button prev' href='#'>Previous</a>&nbsp;
+                        <a class='button skip' href='#'>Hide</a>&nbsp;
+                        <a class='button close' href='#'>Next</a>
+                    </div>
+                </div>
+                <div class='notice tutorial' id='tutorial3'>
+                    Choose a stone from the bottom of the screen.
+                    <div class='buttons'>
+                        <a class='button prev' href='#'>Previous</a>&nbsp;
+                        <a class='button skip' href='#'>Hide</a>&nbsp;
+                        <a class='button close' href='#'>Next</a>
+                    </div>
+                </div>
+                <div class='notice tutorial' id='tutorial4'>
+                    Touch the middle of the drawing to view all points. You can then resize any of the points accordingly.
+                    <div class='buttons'>
+                        <a class='button prev' href='#'>Previous</a>&nbsp;
+                        <a class='button skip' href='#'>Hide</a>&nbsp;
+                        <a class='button close' href='#'>Close</a>
+                    </div>
+                </div>
+                <div class='move-controls controls'>
+                    <a href='#' class='control up'></a>
+                    <a href='#' class='control down'></a>
+                    <a href='#' class='control left'></a>
+                    <a href='#' class='control right'></a>
+                </div>
+                <div class='zoom-controls controls'>
+                    <a href='#' class='control zoomin'></a>
+                    <!--<a href='#' class='control reset'>Reset</a>-->
+                    <a href='#' class='control zoomout'></a>
+                </div>
+                <canvas id="export-canvas" class="hidden"></canvas>
+                <div id="canvas">
+                    <svg class="pattern-container" width="400" height="400">
+                        <defs>
+                            <pattern id="wallpattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+                                <image width="150" height="150" xlink:href="./visualizer/img/walls/drystack.jpg" />
+                            </pattern>
+                        </defs>
+                    </svg>
+                    <img class='project not-loaded'>
+                    <div id="startpoint" class="point"></div>
+                    <div id="measure-start-point" class="point measure-point"></div>
+                    <div id="measure-end-point" class="point measure-point"></div>
+                </div>
+            </div>
+            <div class='walls'>
+                <h5 class='walls-title'>Select Stone</h5>
+                <a class='control prev' href='#'><img src='visualizer/img/wall-prev.jpg'></a>
+                <a class='control next' href='#'><img src='visualizer/img/wall-next.jpg'></a>
+                <div class='walls-wrapper'><!-- data-pattern-size is the width of pattern in inches -->
+                    <div class='walls-container'><!--
+                        --><a class='wall-pattern' href='#' data-index='0' data-pattern-size="12.4" style='background-image: url("./visualizer/img/walls/great-lakes-carbon.jpg")'>
+                            <img class='hidden' src='./visualizer/img/walls/great-lakes-carbon.jpg'>
+                        </a><!--
+                        --><a class='wall-pattern' href='#' data-index='1' data-pattern-size="12.4" style='background-image: url("./visualizer/img/walls/great-lakes-fawn.jpg")'>
+                            <img class='hidden' src='./visualizer/img/walls/great-lakes-fawn.jpg'>
+                        </a><!--
+                    --></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end: elevate -->
+    <!-- start: Footer Catalog -->
+    <div id="footer" class="footer" data-role="footer" data-position="fixed" data-tap-toggle="false">
+        <ul>
+            <li><a class="act" href="#" data-transition="slide" counter="0">{{Strings.Catalog.AboutFusion}}</a></li>
+            <li ng-repeat="nav in CatalogSamplesPage"><a href="#" data-transition="slide" counter="{{nav.Counter}}">{{nav.PageTitle}}</a></li>
+            <li class="last"><a href="#" data-transition="slide" counter="{{InspirationPageCounter}}">{{Strings.Catalog.Inspirations}}</a></li>
+        </ul>
+    </div>
+    <!-- end: Footer Catalog -->
+    <!-- start: Footer Samples -->
+    <div id="footer_samples" class="footer" data-role="footer" data-position="fixed" data-tap-toggle="false">
+        <ul>
+            <li ng-repeat="navigation in StoneSampleChoice"><a class="act" data-transition="slide" href="#" counter="{{$index}}">{{navigation.PageTitle}}</a></li>
+            <!--<li><a data-transition="slide" href="#" counter="1">Dry Stack</a></li>
+            <li><a data-transition="slide" href="#" counter="2">Phoenix</a></li>-->
+        </ul>
+    </div>
+    <!-- end: Footer Samples -->
+    <!-- start: Lightbox -->
+    <div id="lightbox">
+        <div id="lightbox_header">
+            <h1>{{SelectedGallery.Title}}</h1>
+            <a href="#" id="close_lightbox">
+                <img src="./images/lightbox/close.png">
+            </a>
+            <a href="#" class="lightbox_favorite" ng-click="ToggleFavoritesGallery(null,SelectedGallery)">
+                <img src="./images/catalog/add_to_favourites.png" ng-if="SelectedGallery.isFavorite == false" />
+                <img src="./images/catalog/remove_from_favourites.png" ng-if="SelectedGallery.isFavorite == true" />
+            </a>
+            <p id="lightbox_counter"><span class="counter">1</span> / <span class="total">{{SelectedGallery.Images.length}}</span></p>
+        </div>
+        <div class="lightbox_slider">
+        </div>
+    </div>
+    <!-- start: Lightbox -->
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script>
+        function successFunction() {
+            //alert("It worked!");
+        }
+
+        function errorFunction(error) {
+            //alert(error);
+        }
+
+        function trace(value) {
+            //alert(value);
+        }
+
+        function onOnline() {
+            IsOnline = true;
+            GoOnLine();
+			
+            if(firstInit == false){
+                ///writeGoogleMapsScript();
+                firstInit = true;
+            }
+        }
+
+        function onOffline() {
+            IsOnline = false;
+            GoOffline();
+        }
+		var firstInit = false;
+        console.log('onDeviceReady registered');
+        function onDeviceReady() {
+            console.log('onDeviceReady fired');
+
+            isCordovaApp = true;
+
+            window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fileSystem) {
+                dataDir = fileSystem.root.getDirectory("images", { create: true }, function (dir) {
+                    UrlToImages = dir.toURL();
+                    CheckData();
+					
+                });
+            });
+            navigator.splashscreen.hide();
+        }
+
+        document.addEventListener("online", onOnline, false);
+        document.addEventListener("offline", onOffline, false);
+        document.addEventListener("deviceready", onDeviceReady, false);
+
+
+    </script>
+</body>
+</html>
